@@ -2,10 +2,16 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { BottomNavigation } from '../components/navigation';
 
 const HomeScreen = () => {
   const insets = useSafeAreaInsets();
+
+  const handleNavigationPress = (tab: string) => {
+    // Navigation logic will be implemented here
+    console.log('Navigate to:', tab);
+  };
 
   // Sample data for products/services near user
   const nearbyItems = [
@@ -209,28 +215,10 @@ const HomeScreen = () => {
       </ScrollView>
 
       {/* Bottom Navigation */}
-      <View style={[styles.bottomNav, { paddingBottom: insets.bottom + 10 }]}>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="home" size={24} color="#007AFF" />
-          <Text style={[styles.navText, styles.activeNavText]}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="add-circle-outline" size={24} color="#8E8E93" />
-          <Text style={styles.navText}>Post</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <FontAwesome5 name="user-tie" size={20} color="#8E8E93" />
-          <Text style={styles.navText}>Experts</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="document-text-outline" size={24} color="#8E8E93" />
-          <Text style={styles.navText}>My Posts</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="person-outline" size={24} color="#8E8E93" />
-          <Text style={styles.navText}>Profile</Text>
-        </TouchableOpacity>
-      </View>
+      <BottomNavigation 
+        activeTab="Home" 
+        onTabPress={handleNavigationPress} 
+      />
     </View>
   );
 };
@@ -244,8 +232,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -257,24 +245,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   appName: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#1A1A1A',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   location: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#666',
     marginLeft: 4,
     marginRight: 4,
   },
   notificationButton: {
     position: 'relative',
-    padding: 8,
+    padding: 6,
   },
   notificationBadge: {
     position: 'absolute',
@@ -293,30 +281,30 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   searchContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     backgroundColor: '#fff',
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F1F3F4',
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
   },
   searchPlaceholder: {
     flex: 1,
     marginLeft: 10,
     color: '#8E8E93',
-    fontSize: 16,
+    fontSize: 15,
   },
   content: {
     flex: 1,
   },
   welcomeSection: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
   welcomeTitle: {
     fontSize: 24,
@@ -421,28 +409,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#8E8E93',
     marginLeft: 4,
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    paddingTop: 12,
-    paddingHorizontal: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5EA',
-  },
-  navItem: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  navText: {
-    fontSize: 12,
-    color: '#8E8E93',
-    marginTop: 4,
-    fontWeight: '500',
-  },
-  activeNavText: {
-    color: '#007AFF',
   },
 });
 
