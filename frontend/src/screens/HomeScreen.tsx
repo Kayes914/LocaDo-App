@@ -157,31 +157,15 @@ const HomeScreen = () => {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <StatusBar style="dark" />
       
-      {/* Top App Bar */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.appName}>Locado</Text>
-          <View style={styles.locationContainer}>
-            <Ionicons name="location-outline" size={16} color="#666" />
-            <Text style={styles.location}>Gulshan, Dhaka</Text>
-            <Ionicons name="chevron-down" size={16} color="#666" />
-          </View>
-        </View>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Ionicons name="notifications-outline" size={24} color="#333" />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.badgeText}>3</Text>
-          </View>
+      {/* Simple Header */}
+      <View style={styles.headerSection}>
+        <TouchableOpacity style={styles.searchBar}>
+          <Ionicons name="search" size={20} color="#8E8E93" />
+          <Text style={styles.searchText}>Search products, services...</Text>
+          <TouchableOpacity style={styles.filterButton}>
+            <Ionicons name="options" size={18} color="#007AFF" />
+          </TouchableOpacity>
         </TouchableOpacity>
-      </View>
-
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={20} color="#999" />
-          <Text style={styles.searchPlaceholder}>Search items, help, services...</Text>
-          <Ionicons name="options-outline" size={20} color="#999" />
-        </View>
       </View>
 
       <ScrollView 
@@ -189,20 +173,16 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
       >
-        {/* Welcome Section */}
-        <View style={styles.welcomeSection}>
-          <Text style={styles.welcomeTitle}>Discover Local Services</Text>
-          <Text style={styles.welcomeSubtitle}>Everything you need in your neighborhood</Text>
+        {/* Services Section Header */}
+        <View style={styles.servicesHeader}>
+          <Text style={styles.servicesHeaderTitle}>Near You</Text>
+          <TouchableOpacity>
+            <Text style={styles.seeAllText}>View All</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Services Grid */}
         <View style={styles.servicesSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Available Services</Text>
-            <TouchableOpacity>
-              <Text style={styles.seeAllText}>View All</Text>
-            </TouchableOpacity>
-          </View>
           
           <View style={styles.servicesGrid}>
             {getItemsInRows().map((row, rowIndex) => (
@@ -228,114 +208,65 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8F9FA',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  appName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1A1A1A',
-    marginBottom: 2,
-  },
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  location: {
-    fontSize: 13,
-    color: '#666',
-    marginLeft: 4,
-    marginRight: 4,
-  },
-  notificationButton: {
-    position: 'relative',
-    padding: 6,
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#FF3B30',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  badgeText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  searchContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    backgroundColor: '#fff',
+  headerSection: {
+    backgroundColor: '#F8F9FA',
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 16,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F1F3F4',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
-  searchPlaceholder: {
+  searchText: {
     flex: 1,
-    marginLeft: 10,
-    color: '#8E8E93',
+    marginLeft: 12,
     fontSize: 15,
+    color: '#8E8E93',
+    fontWeight: '400',
+  },
+  filterButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+    backgroundColor: '#F0F8FF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     flex: 1,
+    backgroundColor: '#F8F9FA',
   },
-  welcomeSection: {
+  servicesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingTop: 24,
+    paddingBottom: 16,
   },
-  welcomeTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  servicesHeaderTitle: {
+    fontSize: 20,
+    fontWeight: '700',
     color: '#1A1A1A',
-    marginBottom: 8,
-  },
-  welcomeSubtitle: {
-    fontSize: 16,
-    color: '#666',
   },
   // Services Section Styles
   servicesSection: {
     flex: 1,
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-    paddingHorizontal: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1A1A1A',
-  },
   seeAllText: {
     color: '#007AFF',
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 15,
+    fontWeight: '600',
   },
   servicesGrid: {
     paddingHorizontal: 20,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 interface BottomNavigationProps {
   activeTab?: string;
@@ -19,31 +19,27 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({
       id: 'Home',
       icon: 'home',
       label: 'Home',
-      iconFamily: 'Ionicons' as const,
+    },
+    {
+      id: 'Marketplace',
+      icon: 'storefront',
+      label: 'Marketplace',
     },
     {
       id: 'Post',
-      icon: 'add-circle-outline',
+      icon: 'add-circle',
       label: 'Post',
-      iconFamily: 'Ionicons' as const,
+      isSpecial: true,
     },
     {
-      id: 'Experts',
-      icon: 'user-tie',
-      label: 'Experts',
-      iconFamily: 'FontAwesome5' as const,
+      id: 'Help',
+      icon: 'help-circle',
+      label: 'Help',
     },
     {
-      id: 'MyPosts',
-      icon: 'document-text-outline',
-      label: 'My Posts',
-      iconFamily: 'Ionicons' as const,
-    },
-    {
-      id: 'Profile',
-      icon: 'person-outline',
-      label: 'Profile',
-      iconFamily: 'Ionicons' as const,
+      id: 'Settings',
+      icon: 'settings',
+      label: 'Settings',
     },
   ];
 
@@ -53,41 +49,30 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({
     }
   };
 
-  const renderIcon = (item: typeof navigationItems[0], isActive: boolean) => {
-    const iconColor = isActive ? '#007AFF' : '#8E8E93';
-    const iconSize = item.iconFamily === 'FontAwesome5' ? 20 : 24;
-
-    if (item.iconFamily === 'FontAwesome5') {
-      return (
-        <FontAwesome5 
-          name={item.icon as any} 
-          size={iconSize} 
-          color={iconColor} 
-        />
-      );
-    }
-
-    return (
-      <Ionicons 
-        name={item.icon as any} 
-        size={iconSize} 
-        color={iconColor} 
-      />
-    );
-  };
-
   return (
-    <View style={[styles.bottomNav, { paddingBottom: insets.bottom + 10 }]}>
+    <View style={[styles.bottomNav, { paddingBottom: insets.bottom + 12 }]}>
       {navigationItems.map((item) => {
         const isActive = activeTab === item.id;
+        const isSpecial = item.isSpecial;
+        
         return (
           <TouchableOpacity 
             key={item.id}
-            style={styles.navItem}
+            style={[styles.navItem, isSpecial && styles.specialNavItem]}
             onPress={() => handleTabPress(item.id)}
           >
-            {renderIcon(item, isActive)}
-            <Text style={[styles.navText, isActive && styles.activeNavText]}>
+            <View style={[styles.iconContainer, isSpecial && styles.specialIconContainer, isActive && !isSpecial && styles.activeIconContainer]}>
+              <Ionicons 
+                name={item.icon as any} 
+                size={isSpecial ? 26 : 22} 
+                color={isSpecial ? '#FFFFFF' : (isActive ? '#007AFF' : '#8E8E93')} 
+              />
+            </View>
+            <Text style={[
+              styles.navText, 
+              isActive && !isSpecial && styles.activeNavText,
+              isSpecial && styles.specialNavText
+            ]}>
               {item.label}
             </Text>
           </TouchableOpacity>
@@ -100,25 +85,61 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({
 const styles = StyleSheet.create({
   bottomNav: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    paddingTop: 12,
-    paddingHorizontal: 10,
+    backgroundColor: '#FFFFFF',
+    paddingTop: 16,
+    paddingHorizontal: 8,
     borderTopWidth: 1,
-    borderTopColor: '#E5E5EA',
+    borderTopColor: '#F0F0F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 10,
   },
   navItem: {
     flex: 1,
     alignItems: 'center',
     paddingVertical: 8,
   },
+  specialNavItem: {
+    marginTop: -8,
+  },
+  iconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  specialIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#007AFF',
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  activeIconContainer: {
+    backgroundColor: '#F0F8FF',
+  },
   navText: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#8E8E93',
-    marginTop: 4,
     fontWeight: '500',
+    textAlign: 'center',
   },
   activeNavText: {
     color: '#007AFF',
+    fontWeight: '600',
+  },
+  specialNavText: {
+    color: '#007AFF',
+    fontWeight: '600',
+    fontSize: 11,
   },
 });
 
