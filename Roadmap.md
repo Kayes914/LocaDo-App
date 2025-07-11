@@ -7,23 +7,15 @@
 ### 🧩 Key Components:
 
 - **Top App Bar:**
-    - App logo / name
-    - Location selector (dropdown or pin icon)
     - Notification bell icon (🔔)
 - **Search Bar (Sticky):**
     - Placeholder: "Search items, help, services..."
-    - Mic icon (optional for voice input)
-    - Filter icon
 - **Horizontal Scroll Sections (Cards):**
     - “Buy & Sell”
     - “Need Help?”
     - “Find Work / Offer Service”
-- **Post Shortcut Buttons (Below Sections):**
-    - ➕ Post Help
-    - ➕ Sell Item
-    - ➕ Find Expert
 - **Bottom Navigation Bar:**
-    - Icons: 🏠 Home | ➕ Post | 🧑‍🔧 Experts | 📋 My Posts | 👤 Profile
+    - Icons: 🏠 Home | 🧑‍🔧 Experts  | ➕ Post | 📋 My Posts | 👤 Profile
     - Highlight active tab
 
 ---
