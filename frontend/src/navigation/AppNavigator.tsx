@@ -1,6 +1,16 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { HomeScreen, ItemDetailsScreen, ChatListScreen, ChatDetailScreen, SearchScreen } from '../screens';
+import { 
+  HomeScreen, 
+  ItemDetailsScreen, 
+  ChatListScreen, 
+  ChatDetailScreen, 
+  SearchScreen,
+  ExpertsScreen,
+  PostsScreen,
+  ProfileScreen,
+  CreatePostScreen
+} from '../screens';
 import { BuySellItem } from '../types';
 
 // This is a simplified navigation demo
@@ -9,7 +19,7 @@ import { BuySellItem } from '../types';
 interface AppNavigatorProps {}
 
 interface NavigationStackItem {
-  screen: 'Home' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search';
+  screen: 'Home' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost';
   params?: {
     item?: BuySellItem;
     conversation?: any;
@@ -23,7 +33,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
   ]);
 
   const navigate = (screen: string, params?: any) => {
-    const newScreen = screen as 'Home' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search';
+    const newScreen = screen as 'Home' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost';
     
     setNavigationStack(prevStack => [
       ...prevStack,
@@ -81,6 +91,14 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
         return <ChatListScreen navigation={mockNavigation} />;
       case 'Search':
         return <SearchScreen navigation={mockNavigation} route={{ params: currentScreen.params }} />;
+      case 'Experts':
+        return <ExpertsScreen navigation={mockNavigation} />;
+      case 'Posts':
+        return <PostsScreen navigation={mockNavigation} />;
+      case 'Profile':
+        return <ProfileScreen navigation={mockNavigation} />;
+      case 'CreatePost':
+        return <CreatePostScreen navigation={mockNavigation} />;
       default:
         return <HomeScreen navigation={mockNavigation} />;
     }

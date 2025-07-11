@@ -233,8 +233,27 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   ];
 
   const handleNavigationPress = (tab: string) => {
-    // Navigation logic will be implemented here
-    console.log('Navigate to:', tab);
+    if (!navigation) return;
+    
+    switch (tab) {
+      case 'Home':
+        // Already on Home screen
+        break;
+      case 'Experts':
+        navigation.navigate('Experts');
+        break;
+      case 'Post':
+        navigation.navigate('CreatePost');
+        break;
+      case 'MyPosts':
+        navigation.navigate('Posts');
+        break;
+      case 'Profile':
+        navigation.navigate('Profile');
+        break;
+      default:
+        console.log('Navigate to:', tab);
+    }
   };
 
   const renderBuySellCard = (item: BuySellItem) => (

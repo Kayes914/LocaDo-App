@@ -38,7 +38,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({
       id: 'MyPosts',
       icon: 'clipboard-outline',
       activeIcon: 'clipboard',
-      label: 'My Posts',
+      label: 'Posts',
     },
     {
       id: 'Profile',
