@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { BottomNavigation } from '../components/navigation';
+import { SearchHeader } from '../components/common';
 import { BuySellItem, HelpPost, WorkOffer } from '../types/item';
 
 interface HomeScreenProps {
@@ -14,10 +15,64 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+  const [searchText, setSearchText] = React.useState('');
+  const [showSuggestions, setShowSuggestions] = React.useState(false);
+  const [isSearchFocused, setIsSearchFocused] = React.useState(false);
 
-  const handleNavigationPress = (tab: string) => {
-    // Navigation logic will be implemented here
-    console.log('Navigate to:', tab);
+  // Search suggestions data
+  const searchSuggestions = [
+    'iPhone', 'phone', 'mobile phone', 'smartphone', 'Android phone',
+    'laptop', 'computer', 'MacBook', 'gaming laptop', 'notebook',
+    'apartment', 'house', 'room', 'office space', 'flat',
+    'car', 'vehicle', 'bike', 'motorcycle', 'bicycle',
+    'furniture', 'table', 'chair', 'sofa', 'bed',
+    'electronics', 'gadgets', 'camera', 'headphones', 'speaker',
+    'tutor', 'teacher', 'math help', 'english help', 'study help',
+    'electrician', 'plumber', 'cleaner', 'driver', 'cook',
+    'web developer', 'designer', 'programmer', 'IT support'
+  ];
+
+  const getFilteredSuggestions = (text: string) => {
+    if (!text.trim()) return [];
+    
+    return searchSuggestions
+      .filter(suggestion => 
+        suggestion.toLowerCase().includes(text.toLowerCase()) ||
+        text.toLowerCase().includes(suggestion.toLowerCase())
+      )
+      .slice(0, 5); // Limit to 5 suggestions
+  };
+
+  const handleSearchChange = (text: string) => {
+    setSearchText(text);
+    setShowSuggestions(text.length > 0);
+  };
+
+  const handleSearchFocus = () => {
+    setIsSearchFocused(true);
+    if (searchText.length > 0) {
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleSearchBlur = () => {
+    setIsSearchFocused(false);
+    // Delay hiding suggestions to allow for suggestion tap
+    setTimeout(() => setShowSuggestions(false), 150);
+  };
+
+  const handleSuggestionPress = (suggestion: string) => {
+    setSearchText(suggestion);
+    setShowSuggestions(false);
+    // Navigate to search page with the selected suggestion
+    navigation?.navigate('Search', { searchQuery: suggestion });
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchText.trim()) {
+      setShowSuggestions(false);
+      navigation?.navigate('Search', { searchQuery: searchText.trim() });
+    }
   };
 
   const handleItemPress = (item: BuySellItem) => {
@@ -34,15 +89,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
   };
 
-  // Sample data for different sections
-  const buySellItems: BuySellItem[] = [
+  // Extended sample data for search
+  const allItems: BuySellItem[] = [
     {
       id: 1,
       title: 'iPhone 14 Pro',
       price: '৳85,000',
       location: 'Gulshan 2',
       image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=150&h=150&fit=crop',
-      type: 'sell'
+      type: 'sell',
+      category: 'Electronics'
     },
     {
       id: 2,
@@ -50,7 +106,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       price: '৳25,000/month',
       location: 'Banani',
       image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=150&h=150&fit=crop',
-      type: 'rent'
+      type: 'rent',
+      category: 'Real Estate'
     },
     {
       id: 3,
@@ -58,9 +115,76 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       price: '৳8,000',
       location: 'Dhanmondi',
       image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=150&h=150&fit=crop',
-      type: 'sell'
+      type: 'sell',
+      category: 'Furniture'
     },
+    {
+      id: 4,
+      title: 'Samsung Galaxy S23',
+      price: '৳65,000',
+      location: 'Uttara',
+      image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=150&h=150&fit=crop',
+      type: 'sell',
+      category: 'Electronics'
+    },
+    {
+      id: 5,
+      title: 'Office Space for Rent',
+      price: '৳40,000/month',
+      location: 'Gulshan 1',
+      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=150&h=150&fit=crop',
+      type: 'rent',
+      category: 'Real Estate'
+    },
+    {
+      id: 6,
+      title: 'Gaming Laptop',
+      price: '৳95,000',
+      location: 'Banani',
+      image: 'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=150&h=150&fit=crop',
+      type: 'sell',
+      category: 'Electronics'
+    },
+    {
+      id: 7,
+      title: 'Dining Set',
+      price: '৳25,000',
+      location: 'Dhanmondi',
+      image: 'https://images.unsplash.com/photo-1549497538-303791108f95?w=150&h=150&fit=crop',
+      type: 'sell',
+      category: 'Furniture'
+    },
+    {
+      id: 8,
+      title: 'Car for Rent',
+      price: '৳3,500/day',
+      location: 'Gulshan 2',
+      image: 'https://images.unsplash.com/photo-1549924231-f129b911e442?w=150&h=150&fit=crop',
+      type: 'rent',
+      category: 'Vehicles'
+    },
+    {
+      id: 9,
+      title: 'MacBook Air M2',
+      price: '৳125,000',
+      location: 'Banani',
+      image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=150&h=150&fit=crop',
+      type: 'sell',
+      category: 'Electronics'
+    },
+    {
+      id: 10,
+      title: 'Sofa Set',
+      price: '৳35,000',
+      location: 'Uttara',
+      image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=150&h=150&fit=crop',
+      type: 'sell',
+      category: 'Furniture'
+    }
   ];
+
+  // Sample data for different sections (first 3 items from allItems)
+  const buySellItems: BuySellItem[] = allItems.slice(0, 3);
 
   const helpPosts: HelpPost[] = [
     {
@@ -108,6 +232,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     },
   ];
 
+  const handleNavigationPress = (tab: string) => {
+    // Navigation logic will be implemented here
+    console.log('Navigate to:', tab);
+  };
+
   const renderBuySellCard = (item: BuySellItem) => (
     <TouchableOpacity 
       key={item.id} 
@@ -121,9 +250,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <Text style={styles.cardPrice}>{item.price}</Text>
         <Text style={styles.cardLocation}>{item.location}</Text>
       </View>
-      <View style={[styles.typeTag, item.type === 'rent' && styles.rentTag]}>
-        <Text style={styles.typeText}>{item.type === 'rent' ? 'RENT' : 'SELL'}</Text>
-      </View>
+      {item.type === 'rent' && (
+        <View style={styles.typeTag}>
+          <Text style={styles.typeText}>RENT</Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 
@@ -154,9 +285,50 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  const handleWorkPress = (item: WorkOffer) => {
+    // Navigate directly to chat for service discussion
+    if (navigation) {
+      navigation.navigate('ChatDetail', { 
+        conversation: {
+          id: `work_${item.id}`,
+          otherUser: {
+            id: 100 + item.id,
+            name: item.category === 'Tech' ? 'Sarah Ahmed' : 'Karim Hassan',
+            location: item.location
+          },
+          item: {
+            id: item.id,
+            title: item.title,
+            price: item.budget,
+            image: item.category === 'Tech' 
+              ? 'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=150&h=150&fit=crop'
+              : 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=150&h=150&fit=crop',
+            type: 'service'
+          },
+          lastMessage: {
+            text: 'Hi! I saw your work request. I have experience with this type of project.',
+            timestamp: '10m ago',
+            senderId: 100 + item.id,
+            isRead: false
+          },
+          unreadCount: 1,
+          isActive: true
+        }
+      });
+    }
+  };
+
   const renderWorkCard = (item: WorkOffer) => (
-    <TouchableOpacity key={item.id} style={styles.workCard} activeOpacity={0.7}>
-      <Text style={styles.workTitle} numberOfLines={2}>{item.title}</Text>
+    <TouchableOpacity 
+      key={item.id} 
+      style={styles.workCard} 
+      activeOpacity={0.7}
+      onPress={() => handleWorkPress(item)}
+    >
+      <View style={styles.workHeader}>
+        <Text style={styles.workTitle} numberOfLines={2}>{item.title}</Text>
+        <Ionicons name="chatbubble-outline" size={16} color="#8B5CF6" />
+      </View>
       <Text style={styles.workBudget}>{item.budget}</Text>
       <View style={styles.workFooter}>
         <Text style={styles.workLocation}>{item.location}</Text>
@@ -166,22 +338,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={styles.container}>
       <StatusBar style="dark" />
       
-      {/* Clean Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.searchContainer}>
-          <Ionicons name="search-outline" size={18} color="#9CA3AF" />
-          <Text style={styles.searchPlaceholder}>Search items, help, services...</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Ionicons name="notifications-outline" size={20} color="#374151" />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.badgeText}>2</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <SearchHeader
+        navigation={navigation!}
+        searchText={searchText}
+        onSearchChange={handleSearchChange}
+        onSearchFocus={handleSearchFocus}
+        onSearchBlur={handleSearchBlur}
+        onSearchSubmit={handleSearchSubmit}
+        showSuggestions={showSuggestions}
+        suggestions={getFilteredSuggestions(searchText)}
+        onSuggestionPress={handleSuggestionPress}
+        variant="home"
+        chatBadgeCount={3}
+      />
 
       <ScrollView 
         style={styles.content}
@@ -192,7 +364,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Buy Or Rent</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation?.navigate('Search')}>
               <Text style={styles.viewAll}>View all</Text>
             </TouchableOpacity>
           </View>
@@ -209,7 +381,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Need Help?</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation?.navigate('Search')}>
               <Text style={styles.viewAll}>View all</Text>
             </TouchableOpacity>
           </View>
@@ -226,7 +398,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Find Work / Offer Service</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation?.navigate('Search')}>
               <Text style={styles.viewAll}>View all</Text>
             </TouchableOpacity>
           </View>
@@ -244,6 +416,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         activeTab="Home" 
         onTabPress={handleNavigationPress} 
       />
+
+
     </View>
   );
 };
@@ -253,67 +427,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FAFAFA',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: '#FAFAFA',
-    gap: 12,
-  },
-  notificationButton: {
-    position: 'relative',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F9FAFB',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexShrink: 0,
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 2,
-    right: 2,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: '#EF4444',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  badgeText: {
-    fontSize: 9,
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  searchContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: '#F1F5F9',
-    maxWidth: '85%',
-  },
-  searchPlaceholder: {
-    flex: 1,
-    marginLeft: 12,
-    fontSize: 15,
-    color: '#9CA3AF',
-    fontWeight: '400',
-  },
-  micButton: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#F9FAFB',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
+
   content: {
     flex: 1,
     backgroundColor: '#FAFAFA',
@@ -385,13 +500,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 8,
-    backgroundColor: '#059669',
+    backgroundColor: '#F59E0B',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
-  },
-  rentTag: {
-    backgroundColor: '#F59E0B',
   },
   typeText: {
     fontSize: 8,
@@ -480,12 +592,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F1F5F9',
   },
+  workHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+    gap: 8,
+  },
   workTitle: {
     fontSize: 14,
     fontWeight: '500',
     color: '#111827',
-    marginBottom: 8,
     lineHeight: 18,
+    flex: 1,
   },
   workBudget: {
     fontSize: 16,
@@ -506,6 +625,9 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#9CA3AF',
   },
+
+
+
 });
 
 export default HomeScreen; 

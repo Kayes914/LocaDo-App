@@ -4,7 +4,7 @@ export interface BuySellItem {
   price: string;
   location: string;
   image: string;
-  type: 'sell' | 'rent';
+  type: 'sell' | 'rent' | 'service';
   description?: string;
   condition?: string;
   category?: string;
@@ -41,4 +41,32 @@ export interface WorkOffer {
   description?: string;
   requirements?: string[];
   postedBy?: string;
+}
+
+export interface ChatMessage {
+  id: number;
+  text: string;
+  timestamp: string;
+  senderId: number;
+  isRead: boolean;
+}
+
+export interface Conversation {
+  id: number;
+  otherUser: {
+    id: number;
+    name: string;
+    avatar?: string;
+    location: string;
+  };
+  item: {
+    id: number;
+    title: string;
+    price: string;
+    image: string;
+    type: 'sell' | 'rent' | 'service';
+  };
+  lastMessage: ChatMessage;
+  unreadCount: number;
+  isActive: boolean;
 } 

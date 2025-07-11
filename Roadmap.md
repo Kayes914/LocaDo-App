@@ -7,7 +7,7 @@
 ### 🧩 Key Components:
 
 - **Top App Bar:**
-    - Notification bell icon (🔔)
+    - Message Icon for chat system
 - **Search Bar (Sticky):**
     - Placeholder: "Search items, help, services..."
 - **Horizontal Scroll Sections (Cards):**
