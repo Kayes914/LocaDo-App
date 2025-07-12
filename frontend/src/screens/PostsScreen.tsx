@@ -130,14 +130,14 @@ const PostsScreen: React.FC<PostsScreenProps> = ({ navigation }) => {
       case 'Home':
         navigation.navigate('Home');
         break;
-      case 'Experts':
-        navigation.navigate('Experts');
+      case 'Items':
+        // Already on Posts/Items screen
         break;
       case 'Post':
         navigation.navigate('CreatePost');
         break;
-      case 'MyPosts':
-        // Already on Posts screen
+      case 'Experts':
+        navigation.navigate('Experts');
         break;
       case 'Profile':
         navigation.navigate('Profile');
@@ -275,7 +275,7 @@ const PostsScreen: React.FC<PostsScreenProps> = ({ navigation }) => {
         </ScrollView>
 
         <BottomNavigation 
-          activeTab="MyPosts" 
+          activeTab="Items" 
           onTabPress={handleNavigationPress} 
         />
       </View>

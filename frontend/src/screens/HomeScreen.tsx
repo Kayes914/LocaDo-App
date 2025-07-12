@@ -239,14 +239,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       case 'Home':
         // Already on Home screen
         break;
-      case 'Experts':
-        navigation.navigate('Experts');
+      case 'Items':
+        navigation.navigate('Items');
         break;
       case 'Post':
         navigation.navigate('CreatePost');
         break;
-      case 'MyPosts':
-        navigation.navigate('Posts');
+      case 'Experts':
+        navigation.navigate('Experts');
         break;
       case 'Profile':
         navigation.navigate('Profile');
@@ -486,23 +486,29 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F1F5F9',
     position: 'relative',
+    height: 200, // Fixed height for consistent card sizes
+    overflow: 'hidden', // Prevent content overflow
   },
   cardImage: {
     width: '100%',
-    height: 80,
+    height: 100, // Reduced from 80 to match ItemsScreen
     backgroundColor: '#F3F4F6',
     borderTopLeftRadius: 11,
     borderTopRightRadius: 11,
   },
   cardContent: {
-    padding: 12,
+    padding: 10, // Reduced from 12 to match ItemsScreen
+    flex: 1, // Take remaining space
+    justifyContent: 'space-between', // Distribute content evenly
   },
   cardTitle: {
     fontSize: 14,
     fontWeight: '500',
     color: '#111827',
-    marginBottom: 4,
-    lineHeight: 18,
+    marginBottom: 6,
+    lineHeight: 17,
+    height: 34, // Fixed height for 2 lines (17 * 2)
+    textAlignVertical: 'top',
   },
   cardPrice: {
     fontSize: 15,
@@ -519,15 +525,23 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 8,
-    backgroundColor: '#F59E0B',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    backgroundColor: '#10B981',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
   },
   typeText: {
-    fontSize: 8,
+    fontSize: 9,
     color: '#FFFFFF',
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
 
   // Help Cards

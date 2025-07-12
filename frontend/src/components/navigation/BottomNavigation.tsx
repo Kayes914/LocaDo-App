@@ -22,10 +22,10 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({
       label: 'Home',
     },
     {
-      id: 'Experts',
-      icon: 'construct-outline',
-      activeIcon: 'construct',
-      label: 'Experts',
+      id: 'Items',
+      icon: 'grid-outline',
+      activeIcon: 'grid',
+      label: 'Items',
     },
     {
       id: 'Post',
@@ -35,10 +35,10 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({
       isSpecial: true,
     },
     {
-      id: 'MyPosts',
-      icon: 'clipboard-outline',
-      activeIcon: 'clipboard',
-      label: 'Posts',
+      id: 'Experts',
+      icon: 'construct-outline',
+      activeIcon: 'construct',
+      label: 'Experts',
     },
     {
       id: 'Profile',

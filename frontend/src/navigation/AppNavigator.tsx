@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { 
   HomeScreen, 
+  ItemsScreen,
   ItemDetailsScreen, 
   ChatListScreen, 
   ChatDetailScreen, 
@@ -19,7 +20,7 @@ import { BuySellItem } from '../types';
 interface AppNavigatorProps {}
 
 interface NavigationStackItem {
-  screen: 'Home' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost';
+  screen: 'Home' | 'Items' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost';
   params?: {
     item?: BuySellItem;
     conversation?: any;
@@ -33,7 +34,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
   ]);
 
   const navigate = (screen: string, params?: any) => {
-    const newScreen = screen as 'Home' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost';
+    const newScreen = screen as 'Home' | 'Items' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost';
     
     setNavigationStack(prevStack => [
       ...prevStack,
@@ -67,6 +68,8 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
     switch (currentScreen.screen) {
       case 'Home':
         return <HomeScreen navigation={mockNavigation} />;
+      case 'Items':
+        return <ItemsScreen navigation={mockNavigation} />;
       case 'ItemDetails':
         if (currentScreen.params?.item) {
           return (

@@ -197,14 +197,14 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
       case 'Home':
         navigation.navigate('Home');
         break;
-      case 'Experts':
-        navigation.navigate('Experts');
+      case 'Items':
+        navigation.navigate('Items');
         break;
       case 'Post':
         // Already on Create Post screen
         break;
-      case 'MyPosts':
-        navigation.navigate('Posts');
+      case 'Experts':
+        navigation.navigate('Experts');
         break;
       case 'Profile':
         navigation.navigate('Profile');

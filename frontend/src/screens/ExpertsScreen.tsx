@@ -127,14 +127,14 @@ const ExpertsPage: React.FC<ExpertsPageProps> = ({ navigation }) => {
       case 'Home':
         navigation.navigate('Home');
         break;
-      case 'Experts':
-        // Already on Experts screen
+      case 'Items':
+        navigation.navigate('Items');
         break;
       case 'Post':
         navigation.navigate('CreatePost');
         break;
-      case 'MyPosts':
-        navigation.navigate('Posts');
+      case 'Experts':
+        // Already on Experts screen
         break;
       case 'Profile':
         navigation.navigate('Profile');

@@ -1,4 +1,5 @@
 export { default as HomeScreen } from './HomeScreen';
+export { default as ItemsScreen } from './ItemsScreen';
 export { default as ItemDetailsScreen } from './ItemDetailsScreen';
 export { default as ChatListScreen } from './ChatListScreen';
 export { default as ChatDetailScreen } from './ChatDetailScreen';

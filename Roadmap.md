@@ -15,7 +15,7 @@
     - “Need Help?”
     - “Find Work / Offer Service”
 - **Bottom Navigation Bar:**
-    - Icons: 🏠 Home | 🧑‍🔧 Experts  | ➕ Post | 📋 My Posts | 👤 Profile
+    - Icons: 🏠 Home | Items | ➕ Post | 🧑‍🔧 Experts | 👤 Profile
     - Highlight active tab
 
 ---

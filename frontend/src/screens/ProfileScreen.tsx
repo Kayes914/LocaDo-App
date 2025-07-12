@@ -68,14 +68,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       case 'Home':
         navigation.navigate('Home');
         break;
-      case 'Experts':
-        navigation.navigate('Experts');
+      case 'Items':
+        navigation.navigate('Items');
         break;
       case 'Post':
         navigation.navigate('CreatePost');
         break;
-      case 'MyPosts':
-        navigation.navigate('Posts');
+      case 'Experts':
+        navigation.navigate('Experts');
         break;
       case 'Profile':
         // Already on Profile screen
