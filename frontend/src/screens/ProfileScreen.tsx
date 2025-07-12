@@ -9,7 +9,9 @@ import {
   SafeAreaView,
   Alert,
   Modal,
+  TextInput,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -35,10 +37,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [chatNotifications, setChatNotifications] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Mock user data - in real app this would come from state/API
-  const userData: UserData = {
+  const [userData, setUserData] = useState<UserData>({
     name: 'Sarah Ahmed',
     phone: '+880 1712-345678',
     phoneVerified: true,
@@ -46,7 +50,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     trustScore: 4.8,
     skills: ['Tutoring', 'Math', 'Physics', 'English'],
     profileImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
-  };
+  });
+
+  // Edit form state
+  const [editForm, setEditForm] = useState({
+    name: '',
+    phone: '',
+    area: '',
+    profileImage: ''
+  });
 
   
   const handleNavigationPress = (tab: string) => {
@@ -74,8 +86,102 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const handleEditProfile = () => {
-    // Navigate to edit profile screen
-    console.log('Edit profile');
+    // Initialize edit form with current user data
+    setEditForm({
+      name: userData.name,
+      phone: userData.phone,
+      area: userData.area,
+      profileImage: userData.profileImage
+    });
+    setShowEditModal(true);
+  };
+
+  const handleImagePicker = async () => {
+    try {
+      // Request permission
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (permissionResult.granted === false) {
+        Alert.alert('Permission Required', 'Permission to access camera roll is required!');
+        return;
+      }
+
+      // Launch image picker
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setEditForm(prev => ({ ...prev, profileImage: result.assets[0].uri }));
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to pick image');
+    }
+  };
+
+  const handleSaveProfile = () => {
+    // Update user data with edited values
+    const updatedUserData = {
+      ...userData,
+      name: editForm.name.trim(),
+      phone: editForm.phone.trim(),
+      area: editForm.area.trim(),
+      profileImage: editForm.profileImage.trim() || userData.profileImage
+    };
+    
+    setUserData(updatedUserData);
+    setShowEditModal(false);
+    
+    Alert.alert(
+      'Profile Updated',
+      'Your profile has been updated successfully!',
+      [{ text: 'OK' }]
+    );
+  };
+
+  const handleCancelEdit = () => {
+    // Check if there are unsaved changes
+    const hasChanges = 
+      editForm.name !== userData.name ||
+      editForm.phone !== userData.phone ||
+      editForm.area !== userData.area ||
+      editForm.profileImage !== userData.profileImage;
+
+    if (hasChanges) {
+      Alert.alert(
+        'Discard Changes?',
+        'You have unsaved changes. Are you sure you want to discard them?',
+        [
+          { text: 'Keep Editing', style: 'cancel' },
+          { 
+            text: 'Discard', 
+            style: 'destructive', 
+            onPress: () => {
+              setShowEditModal(false);
+              // Reset form
+              setEditForm({
+                name: '',
+                phone: '',
+                area: '',
+                profileImage: ''
+              });
+            }
+          }
+        ]
+      );
+    } else {
+      setShowEditModal(false);
+      // Reset form
+      setEditForm({
+        name: '',
+        phone: '',
+        area: '',
+        profileImage: ''
+      });
+    }
   };
 
   const handleLogout = () => {
@@ -100,6 +206,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   const handleChatNotificationToggle = () => {
     setChatNotifications(prev => !prev);
+  };
+
+  const handleDarkModeToggle = () => {
+    setIsDarkMode(prev => !prev);
+    // In a real implementation, this would update the app's theme context
+    console.log('Dark mode toggled:', !isDarkMode);
   };
 
   const handleHelpFeedback = () => {
@@ -174,30 +286,49 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                   <Ionicons name="information-circle-outline" size={16} color="#6B7280" />
                 </TouchableOpacity>
               </View>
-              <View style={styles.trustScoreValue}>
-                <Ionicons name="star" size={20} color="#FBBF24" />
-                <Text style={styles.trustScoreText}>{userData.trustScore}</Text>
-                <Text style={styles.trustScoreMax}>/5.0</Text>
+              <View style={styles.ratingContainer}>
+                {[...Array(5)].map((_, index) => (
+                  <Ionicons
+                    key={index}
+                    name={index < Math.floor(userData.trustScore) ? "star" : "star-outline"}
+                    size={20}
+                    color={index < Math.floor(userData.trustScore) ? "#FBBF24" : "#D1D5DB"}
+                  />
+                ))}
+                <Text style={styles.ratingText}>{userData.trustScore}</Text>
               </View>
             </View>
 
-            {/* Skills */}
-            <View style={styles.skillsContainer}>
-              <Text style={styles.skillsLabel}>Skills</Text>
-              <View style={styles.skillsGrid}>
-                {userData.skills.map((skill, index) => (
-                  <View key={index} style={styles.skillChip}>
-                    <Text style={styles.skillText}>{skill}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
+
           </View>
 
           {/* Settings Section */}
           <View style={styles.settingsCard}>
             <Text style={styles.sectionTitle}>Settings</Text>
             
+            {/* Dark Mode Toggle */}
+            <TouchableOpacity 
+              style={styles.settingItem}
+              onPress={() => console.log('Dark mode toggle pressed')}
+            >
+              <View style={styles.settingLeft}>
+                <Ionicons 
+                  name="moon-outline" 
+                  size={20} 
+                  color="#6B7280" 
+                />
+                <Text style={styles.settingText}>Dark Mode</Text>
+              </View>
+              <View style={styles.settingRight}>
+                <TouchableOpacity
+                  style={styles.toggle}
+                  onPress={() => console.log('Dark mode toggle pressed')}
+                >
+                  <View style={styles.toggleThumb} />
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+
             {/* Notifications Setting */}
             <TouchableOpacity 
               style={styles.settingItem}
@@ -314,6 +445,110 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
           </View>
         </Modal>
 
+        {/* Edit Profile Modal */}
+        <Modal
+          visible={showEditModal}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={handleCancelEdit}
+        >
+          <View style={styles.editModalOverlay}>
+            <View style={styles.editModalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Edit Profile</Text>
+                <TouchableOpacity onPress={handleCancelEdit}>
+                  <Ionicons name="close" size={24} color="#6B7280" />
+                </TouchableOpacity>
+              </View>
+              
+              <ScrollView style={styles.editForm} showsVerticalScrollIndicator={false}>
+                {/* Profile Image Upload */}
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Profile Picture</Text>
+                  <TouchableOpacity style={styles.imageUploadButton} onPress={handleImagePicker}>
+                    <View style={styles.imageUploadContent}>
+                      {editForm.profileImage ? (
+                        <Image source={{ uri: editForm.profileImage }} style={styles.previewImage} />
+                      ) : (
+                        <View style={styles.imagePlaceholder}>
+                          <Ionicons name="camera" size={32} color="#6B7280" />
+                        </View>
+                      )}
+                      <View style={styles.imageUploadTextContainer}>
+                        <Text style={styles.imageUploadText}>
+                          {editForm.profileImage ? 'Change Photo' : 'Upload Photo'}
+                        </Text>
+                        <Text style={styles.imageUploadSubtext}>Tap to select from gallery</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Name */}
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Full Name</Text>
+                  <TextInput
+                    style={[styles.textInput, styles.focusableInput]}
+                    value={editForm.name}
+                    onChangeText={(text) => setEditForm(prev => ({ ...prev, name: text }))}
+                    placeholder="Enter your full name"
+                    placeholderTextColor="#6B7280"
+                    accessibilityLabel="Full Name"
+                    accessibilityHint="Enter your full name"
+                    returnKeyType="next"
+                  />
+                </View>
+
+                {/* Phone */}
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Phone Number</Text>
+                  <TextInput
+                    style={[styles.textInput, styles.focusableInput]}
+                    value={editForm.phone}
+                    onChangeText={(text) => setEditForm(prev => ({ ...prev, phone: text }))}
+                    placeholder="Enter your phone number"
+                    placeholderTextColor="#6B7280"
+                    keyboardType="phone-pad"
+                    accessibilityLabel="Phone Number"
+                    accessibilityHint="Enter your phone number"
+                    returnKeyType="next"
+                  />
+                </View>
+
+                {/* Area */}
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Area</Text>
+                  <TextInput
+                    style={[styles.textInput, styles.focusableInput]}
+                    value={editForm.area}
+                    onChangeText={(text) => setEditForm(prev => ({ ...prev, area: text }))}
+                    placeholder="Enter your area"
+                    placeholderTextColor="#6B7280"
+                    accessibilityLabel="Area"
+                    accessibilityHint="Enter your area or location"
+                    returnKeyType="done"
+                  />
+                </View>
+              </ScrollView>
+
+              <View style={styles.editModalButtons}>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={handleCancelEdit}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={handleSaveProfile}
+                >
+                  <Text style={styles.saveButtonText}>Save Changes</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
         <BottomNavigation 
           activeTab="Profile" 
           onTabPress={handleNavigationPress} 
@@ -346,7 +581,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingBottom: 100,
+    paddingBottom: 20,
   },
   userCard: {
     backgroundColor: 'white',
@@ -361,12 +596,12 @@ const styles = StyleSheet.create({
   },
   userHeader: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 20,
+    alignItems: 'center',
+    marginBottom: 16,
   },
   userImageContainer: {
     position: 'relative',
-    marginRight: 16,
+    marginRight: 12,
   },
   userImage: {
     width: 64,
@@ -388,12 +623,13 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     flex: 1,
+    justifyContent: 'center',
   },
   userName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     color: '#111827',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   phoneContainer: {
     flexDirection: 'row',
@@ -424,69 +660,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   trustScoreContainer: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   trustScoreHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    justifyContent: 'space-between',
+    marginBottom: 6,
   },
   trustScoreLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#111827',
-    marginRight: 6,
-  },
-  tooltipButton: {
-    padding: 2,
-  },
-  trustScoreValue: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  trustScoreText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-    marginLeft: 6,
-  },
-  trustScoreMax: {
     fontSize: 14,
     color: '#6B7280',
-    marginLeft: 2,
-  },
-  skillsContainer: {
-    marginTop: 4,
-  },
-  skillsLabel: {
-    fontSize: 16,
     fontWeight: '500',
-    color: '#111827',
-    marginBottom: 12,
   },
-  skillsGrid: {
+  tooltipButton: {
+    padding: 4,
+  },
+  ratingContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
+    alignItems: 'center',
+    gap: 4,
   },
-  skillChip: {
-    backgroundColor: '#EBF8FF',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#3B82F6',
+  ratingText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginLeft: 8,
   },
-  skillText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#3B82F6',
-  },
+
   settingsCard: {
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 20,
-    marginBottom: 16,
+    padding: 16,
+    marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -494,18 +700,18 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: '#111827',
     marginBottom: 16,
   },
   settingItem: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: '#E5E7EB',
   },
   settingLeft: {
     flexDirection: 'row',
@@ -514,10 +720,7 @@ const styles = StyleSheet.create({
   settingText: {
     fontSize: 16,
     color: '#111827',
-    marginLeft: 12,
-  },
-  dangerText: {
-    color: '#EF4444',
+    marginLeft: 8,
   },
   settingRight: {
     flexDirection: 'row',
@@ -525,8 +728,11 @@ const styles = StyleSheet.create({
   },
   settingValue: {
     fontSize: 14,
-    color: '#6B7280',
-    marginRight: 8,
+    color: '#111827',
+    fontWeight: '500',
+  },
+  dangerText: {
+    color: '#EF4444',
   },
   helpCard: {
     backgroundColor: 'white',
@@ -613,15 +819,17 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderRadius: 8,
     backgroundColor: '#F3F4F6',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
   cancelButtonText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#374151',
+    color: '#6B7280',
   },
   deleteButton: {
     flex: 1,
@@ -702,6 +910,120 @@ const styles = StyleSheet.create({
   toggleThumbActive: {
     alignSelf: 'flex-end',
   },
+  // Edit Modal Styles
+  editModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  editModalContent: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    maxHeight: '80%',
+    paddingTop: 20,
+  },
+  editForm: {
+    paddingHorizontal: 20,
+    maxHeight: 400,
+  },
+  inputGroup: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#111827',
+    backgroundColor: '#F9FAFB',
+  },
+  focusableInput: {
+    // Focus states for accessibility
+    borderWidth: 2,
+  },
+  multilineInput: {
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  inputHint: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginTop: 4,
+  },
+  editModalButtons: {
+    flexDirection: 'row',
+    gap: 16,
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  saveButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 8,
+    backgroundColor: '#3B82F6',
+    alignItems: 'center',
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: 'white',
+  },
+  // Image Upload Styles
+  imageUploadButton: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    backgroundColor: '#F9FAFB',
+    overflow: 'hidden',
+  },
+  imageUploadContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+  },
+  previewImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 12,
+  },
+  imagePlaceholder: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#E5E7EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  imageUploadTextContainer: {
+    flex: 1,
+  },
+  imageUploadText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#111827',
+    marginBottom: 2,
+  },
+  imageUploadSubtext: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
 });
 
-export default ProfileScreen; 
+export default ProfileScreen;

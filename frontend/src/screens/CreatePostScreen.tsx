@@ -7,21 +7,16 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Dimensions,
   SafeAreaView,
   Alert,
-  Platform,
   Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Button, Switch, RadioButton } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
+import { Switch, RadioButton } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomNavigation } from '../components/navigation';
-
-const { width } = Dimensions.get('window');
 
 interface CreatePostScreenProps {
   navigation?: {
@@ -43,13 +38,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
   const [sellDescription, setSellDescription] = useState('');
   const [sellPrice, setSellPrice] = useState('');
   const [isRent, setIsRent] = useState(false);
-  const [sellCategory, setSellCategory] = useState('books');
   const [sellImages, setSellImages] = useState<ImageAsset[]>([]);
-  const [sellContactMethod, setSellContactMethod] = useState('chat');
+  const [sellContactMethod, setSellContactMethod] = useState('');
   
   // Help Tab State
   const [helpText, setHelpText] = useState('');
-  const [helpCategory, setHelpCategory] = useState('tech');
   const [helpImage, setHelpImage] = useState<ImageAsset | null>(null);
   const [helpUrgency, setHelpUrgency] = useState('today');
   
@@ -59,37 +52,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
   const [workDate, setWorkDate] = useState('');
   const [workTime, setWorkTime] = useState('');
   const [workBudget, setWorkBudget] = useState('');
-  const [workCategory, setWorkCategory] = useState('electrician');
-  const [workContactMethod, setWorkContactMethod] = useState('chat');
+  const [workContactMethod, setWorkContactMethod] = useState('');
   
   // Common State
-  const [locationText, setLocationText] = useState('Current Location');
+  const [locationText, setLocationText] = useState('');
   const [showLocationModal, setShowLocationModal] = useState(false);
-
-  const sellCategories = [
-    { label: 'Books', value: 'books' },
-    { label: 'Electronics', value: 'electronics' },
-    { label: 'Furniture', value: 'furniture' },
-    { label: 'Clothing', value: 'clothing' },
-    { label: 'Sports', value: 'sports' },
-    { label: 'Other', value: 'other' },
-  ];
-
-  const helpCategories = [
-    { label: 'Tech Support', value: 'tech' },
-    { label: 'Study Help', value: 'study' },
-    { label: 'Home Tasks', value: 'home' },
-    { label: 'Other', value: 'other' },
-  ];
-
-  const workCategories = [
-    { label: 'Electrician', value: 'electrician' },
-    { label: 'Plumber', value: 'plumber' },
-    { label: 'Tutor', value: 'tutor' },
-    { label: 'Cleaner', value: 'cleaner' },
-    { label: 'Driver', value: 'driver' },
-    { label: 'Other', value: 'other' },
-  ];
 
   const urgencyOptions = [
     { label: 'Right Now', value: 'now' },
@@ -154,7 +121,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           description: sellDescription,
           price: sellPrice,
           isRent,
-          category: sellCategory,
           images: sellImages,
           contactMethod: sellContactMethod,
         };
@@ -168,7 +134,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
         postData = {
           ...postData,
           description: helpText,
-          category: helpCategory,
           image: helpImage,
           urgency: helpUrgency,
         };
@@ -186,7 +151,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           date: workDate,
           time: workTime,
           budget: workBudget,
-          category: workCategory,
           contactMethod: workContactMethod,
         };
         break;
@@ -211,12 +175,10 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
     setSellDescription('');
     setSellPrice('');
     setIsRent(false);
-    setSellCategory('books');
     setSellImages([]);
     setSellContactMethod('chat');
     
     setHelpText('');
-    setHelpCategory('tech');
     setHelpImage(null);
     setHelpUrgency('today');
     
@@ -225,7 +187,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
     setWorkDate('');
     setWorkTime('');
     setWorkBudget('');
-    setWorkCategory('electrician');
     setWorkContactMethod('chat');
   };
 
@@ -267,7 +228,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           value={sellTitle}
           onChangeText={setSellTitle}
           placeholder="What are you selling?"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#94A3B8"
         />
       </View>
 
@@ -278,8 +239,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           style={[styles.textInput, styles.multilineInput]}
           value={sellDescription}
           onChangeText={setSellDescription}
-          placeholder="Describe your item..."
-          placeholderTextColor="#9CA3AF"
+          placeholder="Describe your item in detail..."
+          placeholderTextColor="#94A3B8"
           multiline
           numberOfLines={4}
         />
@@ -287,20 +248,20 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
 
       {/* Price and Rent/Sell Toggle */}
       <View style={styles.row}>
-        <View style={[styles.inputGroup, { flex: 1, marginRight: 12 }]}>
+        <View style={[styles.inputGroup, styles.halfWidth, { width: '48%' }]}>
           <Text style={styles.label}>Price *</Text>
           <TextInput
-            style={styles.textInput}
+            style={[styles.textInput, styles.inputHeight]}
             value={sellPrice}
             onChangeText={setSellPrice}
             placeholder="0"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#94A3B8"
             keyboardType="numeric"
           />
         </View>
-        <View style={styles.toggleGroup}>
+        <View style={[styles.inputGroup, styles.halfWidth, { width: '48%' }]}>
           <Text style={styles.label}>Type</Text>
-          <View style={styles.toggleContainer}>
+          <View style={[styles.textInput, styles.inputHeight, styles.toggleContainer]}>
             <Text style={[styles.toggleText, !isRent && styles.toggleTextActive]}>Sell</Text>
             <Switch
               value={isRent}
@@ -312,24 +273,33 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Category */}
+      {/* Location */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Category</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={sellCategory}
-            onValueChange={setSellCategory}
-            style={styles.picker}
-          >
-            {sellCategories.map(cat => (
-              <Picker.Item key={cat.value} label={cat.label} value={cat.value} />
-            ))}
-          </Picker>
-        </View>
+        <Text style={styles.label}>Location</Text>
+        <TextInput
+          style={styles.textInput}
+          value={locationText}
+          onChangeText={setLocationText}
+          placeholder="Current Location"
+          placeholderTextColor="#94A3B8"
+        />
+      </View>
+
+      {/* Contact Number */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Contact Number</Text>
+        <TextInput
+          style={styles.textInput}
+          value={sellContactMethod}
+          onChangeText={setSellContactMethod}
+          placeholder="Enter your phone number"
+          placeholderTextColor="#94A3B8"
+          keyboardType="phone-pad"
+        />
       </View>
 
       {/* Image Upload */}
-      <View style={styles.inputGroup}>
+      <View style={[styles.inputGroup, { marginBottom: 40 }]}>
         <Text style={styles.label}>Images (1-4)</Text>
         <View style={styles.imageUploadContainer}>
           {sellImages.map((image) => (
@@ -348,46 +318,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
               style={styles.addImageButton}
               onPress={() => pickImages(true)}
             >
-              <Ionicons name="camera" size={24} color="#6B7280" />
+              <Ionicons name="camera" size={28} color="#64748B" />
               <Text style={styles.addImageText}>Add Photo</Text>
             </TouchableOpacity>
           )}
         </View>
-      </View>
-
-      {/* Location */}
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Location</Text>
-        <TouchableOpacity
-          style={styles.locationButton}
-          onPress={handleLocationPress}
-        >
-          <Ionicons name="location-outline" size={20} color="#6B7280" />
-          <Text style={styles.locationText}>{locationText}</Text>
-          <Ionicons name="chevron-forward" size={20} color="#6B7280" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Contact Method */}
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Contact Method</Text>
-        <RadioButton.Group
-          onValueChange={setSellContactMethod}
-          value={sellContactMethod}
-        >
-          <View style={styles.radioOption}>
-            <RadioButton value="chat" color="#3B82F6" />
-            <Text style={styles.radioLabel}>In-app Chat</Text>
-          </View>
-          <View style={styles.radioOption}>
-            <RadioButton value="phone" color="#3B82F6" />
-            <Text style={styles.radioLabel}>Phone Call</Text>
-          </View>
-          <View style={styles.radioOption}>
-            <RadioButton value="both" color="#3B82F6" />
-            <Text style={styles.radioLabel}>Both</Text>
-          </View>
-        </RadioButton.Group>
       </View>
     </ScrollView>
   );
@@ -402,30 +337,39 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           value={helpText}
           onChangeText={setHelpText}
           placeholder="Describe what you need help with..."
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#94A3B8"
           multiline
           numberOfLines={4}
         />
       </View>
 
-      {/* Category */}
+      {/* Location */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Category</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={helpCategory}
-            onValueChange={setHelpCategory}
-            style={styles.picker}
-          >
-            {helpCategories.map(cat => (
-              <Picker.Item key={cat.value} label={cat.label} value={cat.value} />
-            ))}
-          </Picker>
-        </View>
+        <Text style={styles.label}>Location</Text>
+        <TextInput
+          style={styles.textInput}
+          value={locationText}
+          onChangeText={setLocationText}
+          placeholder="Current Location"
+          placeholderTextColor="#94A3B8"
+        />
+      </View>
+
+      {/* Contact Number */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Contact Number</Text>
+        <TextInput
+          style={styles.textInput}
+          value={sellContactMethod}
+          onChangeText={setSellContactMethod}
+          placeholder="Enter your phone number"
+          placeholderTextColor="#94A3B8"
+          keyboardType="phone-pad"
+        />
       </View>
 
       {/* Optional Image */}
-      <View style={styles.inputGroup}>
+      <View style={[styles.inputGroup, { marginBottom: 40 }]}>
         <Text style={styles.label}>Image (Optional)</Text>
         <View style={styles.imageUploadContainer}>
           {helpImage ? (
@@ -443,33 +387,21 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
               style={styles.addImageButton}
               onPress={() => pickImages(false)}
             >
-              <Ionicons name="camera" size={24} color="#6B7280" />
+              <Ionicons name="camera" size={28} color="#64748B" />
               <Text style={styles.addImageText}>Add Photo</Text>
             </TouchableOpacity>
           )}
         </View>
       </View>
-
-      {/* Urgency */}
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>When do you need help?</Text>
-        <RadioButton.Group
-          onValueChange={setHelpUrgency}
-          value={helpUrgency}
-        >
-          {urgencyOptions.map(option => (
-            <View key={option.value} style={styles.radioOption}>
-              <RadioButton value={option.value} color="#3B82F6" />
-              <Text style={styles.radioLabel}>{option.label}</Text>
-            </View>
-          ))}
-        </RadioButton.Group>
-      </View>
     </ScrollView>
   );
 
   const renderWorkTab = () => (
-    <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
+    <ScrollView 
+      style={[styles.tabContent, { paddingBottom: 40 }]} 
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 40 }}
+    >
       {/* Title */}
       <View style={styles.inputGroup}>
         <Text style={styles.label}>What do you need? *</Text>
@@ -478,7 +410,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           value={workTitle}
           onChangeText={setWorkTitle}
           placeholder="e.g., Fix electrical outlet"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#94A3B8"
         />
       </View>
 
@@ -490,7 +422,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           value={workDescription}
           onChangeText={setWorkDescription}
           placeholder="Provide more details about the work needed..."
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#94A3B8"
           multiline
           numberOfLines={4}
         />
@@ -498,14 +430,14 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
 
       {/* Date and Time */}
       <View style={styles.row}>
-        <View style={[styles.inputGroup, { flex: 1, marginRight: 12 }]}>
+        <View style={[styles.inputGroup, { flex: 1 }]}>
           <Text style={styles.label}>Date</Text>
           <TextInput
             style={styles.textInput}
             value={workDate}
             onChangeText={setWorkDate}
             placeholder="DD/MM/YYYY"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#94A3B8"
           />
         </View>
         <View style={[styles.inputGroup, { flex: 1 }]}>
@@ -515,7 +447,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
             value={workTime}
             onChangeText={setWorkTime}
             placeholder="HH:MM"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#94A3B8"
           />
         </View>
       </View>
@@ -528,60 +460,34 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           value={workBudget}
           onChangeText={setWorkBudget}
           placeholder="Enter your budget"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#94A3B8"
           keyboardType="numeric"
         />
-      </View>
-
-      {/* Category */}
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Category</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={workCategory}
-            onValueChange={setWorkCategory}
-            style={styles.picker}
-          >
-            {workCategories.map(cat => (
-              <Picker.Item key={cat.value} label={cat.label} value={cat.value} />
-            ))}
-          </Picker>
-        </View>
       </View>
 
       {/* Location */}
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Location</Text>
-        <TouchableOpacity
-          style={styles.locationButton}
-          onPress={handleLocationPress}
-        >
-          <Ionicons name="location-outline" size={20} color="#6B7280" />
-          <Text style={styles.locationText}>{locationText}</Text>
-          <Ionicons name="chevron-forward" size={20} color="#6B7280" />
-        </TouchableOpacity>
+        <TextInput
+          style={styles.textInput}
+          value={locationText}
+          onChangeText={setLocationText}
+          placeholder="Current Location"
+          placeholderTextColor="#94A3B8"
+        />
       </View>
 
-      {/* Contact Method */}
+      {/* Contact Number */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Contact Method</Text>
-        <RadioButton.Group
-          onValueChange={setWorkContactMethod}
+        <Text style={styles.label}>Contact Number</Text>
+        <TextInput
+          style={styles.textInput}
           value={workContactMethod}
-        >
-          <View style={styles.radioOption}>
-            <RadioButton value="chat" color="#3B82F6" />
-            <Text style={styles.radioLabel}>In-app Chat</Text>
-          </View>
-          <View style={styles.radioOption}>
-            <RadioButton value="phone" color="#3B82F6" />
-            <Text style={styles.radioLabel}>Phone Call</Text>
-          </View>
-          <View style={styles.radioOption}>
-            <RadioButton value="both" color="#3B82F6" />
-            <Text style={styles.radioLabel}>Both</Text>
-          </View>
-        </RadioButton.Group>
+          onChangeText={setWorkContactMethod}
+          placeholder="Enter your phone number"
+          placeholderTextColor="#94A3B8"
+          keyboardType="phone-pad"
+        />
       </View>
     </ScrollView>
   );
@@ -591,9 +497,13 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
       <StatusBar style="dark" />
       
       <View style={styles.container}>
-        {/* Header */}
+        {/* Header with Post Button */}
         <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
           <Text style={styles.headerTitle}>Create Post</Text>
+          <TouchableOpacity style={styles.headerPostButton} onPress={handlePost}>
+            <Ionicons name="send" size={18} color="white" />
+            <Text style={styles.headerPostButtonText}>Post</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Tab Navigation */}
@@ -602,6 +512,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
             style={[styles.tab, activeTab === 'sell' && styles.activeTab]}
             onPress={() => setActiveTab('sell')}
           >
+            <Ionicons 
+              name={activeTab === 'sell' ? 'storefront' : 'storefront-outline'} 
+              size={20} 
+              color={activeTab === 'sell' ? '#3B82F6' : '#64748B'} 
+            />
             <Text style={[styles.tabText, activeTab === 'sell' && styles.activeTabText]}>
               Sell
             </Text>
@@ -610,6 +525,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
             style={[styles.tab, activeTab === 'help' && styles.activeTab]}
             onPress={() => setActiveTab('help')}
           >
+            <Ionicons 
+              name={activeTab === 'help' ? 'help-circle' : 'help-circle-outline'} 
+              size={20} 
+              color={activeTab === 'help' ? '#3B82F6' : '#64748B'} 
+            />
             <Text style={[styles.tabText, activeTab === 'help' && styles.activeTabText]}>
               Help
             </Text>
@@ -618,6 +538,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
             style={[styles.tab, activeTab === 'work' && styles.activeTab]}
             onPress={() => setActiveTab('work')}
           >
+            <Ionicons 
+              name={activeTab === 'work' ? 'construct' : 'construct-outline'} 
+              size={20} 
+              color={activeTab === 'work' ? '#3B82F6' : '#64748B'} 
+            />
             <Text style={[styles.tabText, activeTab === 'work' && styles.activeTabText]}>
               Work
             </Text>
@@ -631,11 +556,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           {activeTab === 'work' && renderWorkTab()}
         </View>
 
-        {/* Floating Post Button */}
-        <TouchableOpacity style={styles.postButton} onPress={handlePost}>
-          <Text style={styles.postButtonText}>Post</Text>
-        </TouchableOpacity>
-
         {/* Location Modal */}
         <Modal
           visible={showLocationModal}
@@ -645,14 +565,14 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>Location</Text>
+              <Text style={styles.modalTitle}>📍 Set Location</Text>
               <Text style={styles.modalText}>Current: {locationText}</Text>
               <TextInput
                 style={styles.textInput}
                 value={locationText}
                 onChangeText={setLocationText}
-                placeholder="Enter your location"
-                placeholderTextColor="#9CA3AF"
+                placeholder="Current Location"
+                placeholderTextColor="#94A3B8"
               />
               <View style={styles.modalButtons}>
                 <TouchableOpacity
@@ -684,252 +604,314 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F8FAFC',
   },
   container: {
     flex: 1,
   },
   header: {
-    paddingHorizontal: 20,
-    paddingBottom: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingBottom: 20,
     backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1E293B',
+    letterSpacing: -0.5,
+  },
+  headerPostButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#3B82F6',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    gap: 6,
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  headerPostButtonText: {
+    color: 'white',
+    fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
-    textAlign: 'center',
   },
   tabNavigation: {
     flexDirection: 'row',
     backgroundColor: 'white',
+    paddingHorizontal: 16,
+    paddingTop: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: '#E2E8F0',
   },
   tab: {
     flex: 1,
     paddingVertical: 16,
+    paddingHorizontal: 8,
     alignItems: 'center',
-    borderBottomWidth: 2,
+    borderBottomWidth: 3,
     borderBottomColor: 'transparent',
+    borderRadius: 8,
+    marginHorizontal: 4,
+    gap: 4,
   },
   activeTab: {
     borderBottomColor: '#3B82F6',
+    backgroundColor: '#F0F9FF',
   },
   tabText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#6B7280',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#64748B',
   },
   activeTabText: {
     color: '#3B82F6',
+    fontWeight: '700',
   },
   contentContainer: {
     flex: 1,
+    backgroundColor: '#F8FAFC',
   },
   tabContent: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 100,
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 40,
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
   label: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#374151',
-    marginBottom: 8,
+    fontWeight: '600',
+    color: '#334155',
+    marginBottom: 10,
+    letterSpacing: -0.2,
   },
   textInput: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    borderWidth: 2,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     fontSize: 16,
     backgroundColor: 'white',
-    color: '#111827',
+    color: '#1E293B',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  inputHeight: {
+    height: 56,
   },
   multilineInput: {
-    height: 100,
+    height: 120,
     textAlignVertical: 'top',
+    paddingTop: 16,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'flex-end',
+    gap: 16,
+    justifyContent: 'space-between',
   },
-  toggleGroup: {
+  halfWidth: {
     flex: 1,
   },
   toggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
   },
   toggleText: {
     fontSize: 16,
-    color: '#6B7280',
+    color: '#64748B',
+    fontWeight: '500',
   },
   toggleTextActive: {
     color: '#3B82F6',
-    fontWeight: '500',
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    backgroundColor: 'white',
-  },
-  picker: {
-    height: 50,
+    fontWeight: '700',
   },
   imageUploadContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: 16,
+    marginTop: 8,
   },
   imagePreview: {
     position: 'relative',
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   previewImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
+    width: 90,
+    height: 90,
+    borderRadius: 16,
   },
   removeImageButton: {
     position: 'absolute',
-    top: -8,
-    right: -8,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    top: -6,
+    right: -6,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     backgroundColor: '#EF4444',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   addImageButton: {
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
     borderWidth: 2,
-    borderColor: '#D1D5DB',
+    borderColor: '#CBD5E1',
     borderStyle: 'dashed',
-    borderRadius: 8,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F8FAFC',
   },
   addImageText: {
     fontSize: 12,
-    color: '#6B7280',
-    marginTop: 4,
+    color: '#64748B',
+    marginTop: 6,
+    fontWeight: '500',
   },
   locationButton: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    borderWidth: 2,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
   locationText: {
     flex: 1,
     fontSize: 16,
-    color: '#111827',
-    marginLeft: 8,
+    color: '#1E293B',
+    marginLeft: 12,
+    fontWeight: '500',
   },
   radioOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
+    backgroundColor: 'white',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
+    elevation: 1,
   },
   radioLabel: {
     fontSize: 16,
-    color: '#374151',
-    marginLeft: 8,
-  },
-  postButton: {
-    position: 'absolute',
-    bottom: 100,
-    right: 20,
-    backgroundColor: '#3B82F6',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 25,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
-  postButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#334155',
+    marginLeft: 12,
+    fontWeight: '500',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 24,
   },
   modalContainer: {
     backgroundColor: 'white',
-    padding: 20,
-    margin: 20,
-    borderRadius: 12,
-    width: '80%',
+    padding: 24,
+    borderRadius: 20,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 10,
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1E293B',
     marginBottom: 16,
+    textAlign: 'center',
   },
   modalText: {
     fontSize: 16,
-    color: '#6B7280',
+    color: '#64748B',
     marginBottom: 20,
+    textAlign: 'center',
   },
   modalButtons: {
     flexDirection: 'row',
-    gap: 12,
-    marginTop: 20,
+    gap: 16,
+    marginTop: 24,
   },
   modalButton: {
     flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#F1F5F9',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   confirmButton: {
     backgroundColor: '#3B82F6',
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   cancelButtonText: {
-    color: '#374151',
+    color: '#475569',
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   confirmButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '700',
   },
 });
 
