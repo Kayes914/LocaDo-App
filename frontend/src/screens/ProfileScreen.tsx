@@ -42,14 +42,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Mock user data - in real app this would come from state/API
+  // Default placeholder image
+  const DEFAULT_PROFILE_IMAGE = 'https://ui-avatars.com/api/?name=S+&background=random&size=150';
+
   const [userData, setUserData] = useState<UserData>({
     name: 'Sarah Ahmed',
-    phone: '+880 1712-345678',
+    phone: '+880 1716-345678',
     phoneVerified: true,
     area: 'Dhanmondi, Dhaka',
     trustScore: 4.8,
     skills: ['Tutoring', 'Math', 'Physics', 'English'],
-    profileImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
+    profileImage: DEFAULT_PROFILE_IMAGE
   });
 
   // Edit form state
@@ -263,9 +266,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                 <View style={styles.phoneContainer}>
                   <Ionicons name="call-outline" size={16} color="#6B7280" />
                   <Text style={styles.phoneText}>{userData.phone}</Text>
-                  {userData.phoneVerified && (
-                    <Ionicons name="shield-checkmark" size={16} color="#10B981" />
-                  )}
                 </View>
                 <View style={styles.locationContainer}>
                   <Ionicons name="location-outline" size={16} color="#6B7280" />
