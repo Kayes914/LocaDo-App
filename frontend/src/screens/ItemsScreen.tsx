@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BottomNavigation } from '../components/navigation';
 import { SearchHeader } from '../components/common';
 import { BuySellItem } from '../types/item';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ItemsScreenProps {
   navigation?: {
@@ -24,6 +25,7 @@ interface ItemsScreenProps {
 
 const ItemsScreen: React.FC<ItemsScreenProps> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+  const { isDarkMode, colors } = useTheme();
   const [searchText, setSearchText] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
@@ -168,6 +170,112 @@ const ItemsScreen: React.FC<ItemsScreenProps> = ({ navigation }) => {
     setTimeout(() => setRefreshing(false), 1000);
   };
 
+  // Dynamic styles based on theme
+  const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.card,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    content: {
+      flex: 1,
+    },
+    headerSection: {
+      paddingHorizontal: 20,
+      paddingVertical: 20,
+      backgroundColor: colors.card,
+      marginBottom: 8,
+    },
+    headerTitle: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 4,
+    },
+    headerSubtitle: {
+      fontSize: 15,
+      color: colors.textSecondary,
+      lineHeight: 20,
+    },
+    itemsContainer: {
+      paddingHorizontal: 20,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    },
+    itemWrapper: {
+      width: '48%',
+      marginBottom: 20,
+    },
+    itemCard: {
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.border,
+      position: 'relative',
+      marginBottom: 12,
+      height: 200,
+      overflow: 'hidden',
+    },
+    itemImage: {
+      width: '100%',
+      height: 100,
+      backgroundColor: colors.surfaceSecondary,
+      borderTopLeftRadius: 11,
+      borderTopRightRadius: 11,
+    },
+    itemContent: {
+      padding: 10,
+      flex: 1,
+      justifyContent: 'space-between',
+    },
+    itemTitle: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.text,
+      marginBottom: 6,
+      lineHeight: 17,
+      height: 34,
+      textAlignVertical: 'top',
+    },
+    itemPrice: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 4,
+    },
+    itemLocation: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      fontWeight: '400',
+    },
+    typeTag: {
+      position: 'absolute',
+      top: 8,
+      right: 8,
+      backgroundColor: colors.success,
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: colors.card,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2,
+      shadowRadius: 2,
+      elevation: 3,
+    },
+    typeText: {
+      fontSize: 9,
+      color: '#FFFFFF',
+      fontWeight: '700',
+      letterSpacing: 0.5,
+    },
+  });
+
   const renderItemCard = (item: BuySellItem) => (
     <View style={styles.itemWrapper} key={item.id}>
       <TouchableOpacity
@@ -187,14 +295,12 @@ const ItemsScreen: React.FC<ItemsScreenProps> = ({ navigation }) => {
           </View>
         )}
       </TouchableOpacity>
-      
-
     </View>
   );
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar style="dark" />
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
       
       <View style={styles.container}>
         <SearchHeader
@@ -233,111 +339,5 @@ const ItemsScreen: React.FC<ItemsScreenProps> = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
-  content: {
-    flex: 1,
-  },
-  headerSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: '#FFFFFF',
-    marginBottom: 8,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 4,
-  },
-  headerSubtitle: {
-    fontSize: 15,
-    color: '#6B7280',
-    lineHeight: 20,
-  },
-  itemsContainer: {
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  itemWrapper: {
-    width: '48%',
-    marginBottom: 20,
-  },
-  itemCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#F1F5F9',
-    position: 'relative',
-    marginBottom: 12,
-    height: 200, // Fixed height for consistent card sizes
-    overflow: 'hidden', // Prevent content overflow
-  },
-  itemImage: {
-    width: '100%',
-    height: 100, // Reduced from 120 to fit better
-    backgroundColor: '#F3F4F6',
-    borderTopLeftRadius: 11,
-    borderTopRightRadius: 11,
-  },
-  itemContent: {
-    padding: 10, // Reduced from 12 to save space
-    flex: 1, // Take remaining space
-    justifyContent: 'space-between', // Distribute content evenly
-  },
-  itemTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111827',
-    marginBottom: 6,
-    lineHeight: 17,
-    height: 34, // Fixed height for 2 lines (17 * 2)
-    textAlignVertical: 'top',
-  },
-  itemPrice: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 4,
-  },
-  itemLocation: {
-    fontSize: 12,
-    color: '#6B7280',
-    fontWeight: '400',
-  },
-  typeTag: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: '#10B981',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 3,
-  },
-  typeText: {
-    fontSize: 9,
-    color: '#FFFFFF',
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-
-});
 
 export default ItemsScreen; 

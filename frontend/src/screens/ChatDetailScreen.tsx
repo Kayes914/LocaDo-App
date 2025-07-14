@@ -14,6 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Conversation, ChatMessage } from '../types/item';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ChatDetailScreenProps {
   route: {
@@ -29,6 +30,7 @@ interface ChatDetailScreenProps {
 const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ route, navigation }) => {
   const { conversation } = route.params;
   const insets = useSafeAreaInsets();
+  const { isDarkMode, colors } = useTheme();
   const [newMessage, setNewMessage] = useState('');
 
   // Generate conversation based on item type
@@ -173,17 +175,199 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ route, navigation }
     );
   };
 
+  // Dynamic styles based on theme
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingVertical: 16,
+      backgroundColor: colors.card,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    backButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: colors.surfaceSecondary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    headerInfo: {
+      flex: 1,
+      marginLeft: 16,
+    },
+    userName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    userLocation: {
+      fontSize: 13,
+      color: colors.textSecondary,
+    },
+    callButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: colors.surfaceSecondary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    itemInfoBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingVertical: 12,
+      backgroundColor: colors.card,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      gap: 12,
+    },
+    itemThumb: {
+      width: 40,
+      height: 40,
+      borderRadius: 6,
+      backgroundColor: colors.surfaceSecondary,
+    },
+    itemInfo: {
+      flex: 1,
+    },
+    itemTitle: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.text,
+    },
+    itemPrice: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      fontWeight: '600',
+    },
+    rentBadge: {
+      backgroundColor: colors.warning,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 4,
+    },
+    rentBadgeText: {
+      fontSize: 10,
+      color: '#FFFFFF',
+      fontWeight: '700',
+    },
+    serviceBadge: {
+      backgroundColor: colors.secondary,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 4,
+    },
+    serviceBadgeText: {
+      fontSize: 10,
+      color: '#FFFFFF',
+      fontWeight: '700',
+    },
+    messagesContainer: {
+      flex: 1,
+    },
+    messagesContent: {
+      padding: 20,
+      gap: 16,
+    },
+    messageContainer: {
+      maxWidth: '80%',
+    },
+    sentMessage: {
+      alignSelf: 'flex-end',
+      alignItems: 'flex-end',
+    },
+    receivedMessage: {
+      alignSelf: 'flex-start',
+      alignItems: 'flex-start',
+    },
+    messageBubble: {
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderRadius: 18,
+      marginBottom: 4,
+    },
+    sentBubble: {
+      backgroundColor: colors.primary,
+      borderBottomRightRadius: 4,
+    },
+    receivedBubble: {
+      backgroundColor: colors.card,
+      borderBottomLeftRadius: 4,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    messageText: {
+      fontSize: 15,
+      lineHeight: 20,
+    },
+    sentText: {
+      color: '#FFFFFF',
+    },
+    receivedText: {
+      color: colors.text,
+    },
+    messageTime: {
+      fontSize: 11,
+      marginHorizontal: 4,
+    },
+    sentTime: {
+      color: colors.textTertiary,
+    },
+    receivedTime: {
+      color: colors.textTertiary,
+    },
+    inputBar: {
+      backgroundColor: colors.card,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      paddingHorizontal: 20,
+      paddingTop: 16,
+    },
+    inputContainer: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      backgroundColor: colors.input,
+      borderRadius: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      gap: 12,
+    },
+    textInput: {
+      flex: 1,
+      fontSize: 15,
+      color: colors.text,
+      maxHeight: 100,
+      paddingVertical: 8,
+    },
+    sendButton: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.primaryLight,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+
   return (
     <KeyboardAvoidingView 
       style={[styles.container, { paddingTop: insets.top }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <StatusBar style="dark" />
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
       
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={navigation.goBack}>
-          <Ionicons name="arrow-back" size={22} color="#374151" />
+          <Ionicons name="arrow-back" size={22} color={colors.text} />
         </TouchableOpacity>
         
         <View style={styles.headerInfo}>
@@ -192,7 +376,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ route, navigation }
         </View>
         
         <TouchableOpacity style={styles.callButton}>
-          <Ionicons name="call-outline" size={22} color="#374151" />
+          <Ionicons name="call-outline" size={22} color={colors.text} />
         </TouchableOpacity>
       </View>
 
@@ -230,199 +414,19 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({ route, navigation }
           <TextInput
             style={styles.textInput}
             placeholder="Type a message..."
+            placeholderTextColor={colors.inputPlaceholder}
             value={newMessage}
             onChangeText={setNewMessage}
             multiline
             maxLength={500}
           />
           <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-            <Ionicons name="send" size={20} color="#3B82F6" />
+            <Ionicons name="send" size={20} color={colors.primary} />
           </TouchableOpacity>
         </View>
       </View>
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F9FAFB',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerInfo: {
-    flex: 1,
-    marginLeft: 16,
-  },
-  userName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  userLocation: {
-    fontSize: 13,
-    color: '#6B7280',
-  },
-  callButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F9FAFB',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  itemInfoBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-    gap: 12,
-  },
-  itemThumb: {
-    width: 40,
-    height: 40,
-    borderRadius: 6,
-    backgroundColor: '#F3F4F6',
-  },
-  itemInfo: {
-    flex: 1,
-  },
-  itemTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111827',
-  },
-  itemPrice: {
-    fontSize: 13,
-    color: '#6B7280',
-    fontWeight: '600',
-  },
-  rentBadge: {
-    backgroundColor: '#F59E0B',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  rentBadgeText: {
-    fontSize: 10,
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  serviceBadge: {
-    backgroundColor: '#8B5CF6',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  serviceBadgeText: {
-    fontSize: 10,
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  messagesContainer: {
-    flex: 1,
-  },
-  messagesContent: {
-    padding: 20,
-    gap: 16,
-  },
-  messageContainer: {
-    maxWidth: '80%',
-  },
-  sentMessage: {
-    alignSelf: 'flex-end',
-    alignItems: 'flex-end',
-  },
-  receivedMessage: {
-    alignSelf: 'flex-start',
-    alignItems: 'flex-start',
-  },
-  messageBubble: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 18,
-    marginBottom: 4,
-  },
-  sentBubble: {
-    backgroundColor: '#3B82F6',
-    borderBottomRightRadius: 4,
-  },
-  receivedBubble: {
-    backgroundColor: '#FFFFFF',
-    borderBottomLeftRadius: 4,
-    borderWidth: 1,
-    borderColor: '#F1F5F9',
-  },
-  messageText: {
-    fontSize: 15,
-    lineHeight: 20,
-  },
-  sentText: {
-    color: '#FFFFFF',
-  },
-  receivedText: {
-    color: '#111827',
-  },
-  messageTime: {
-    fontSize: 11,
-    marginHorizontal: 4,
-  },
-  sentTime: {
-    color: '#9CA3AF',
-  },
-  receivedTime: {
-    color: '#9CA3AF',
-  },
-  inputBar: {
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
-    paddingHorizontal: 20,
-    paddingTop: 16,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    backgroundColor: '#F9FAFB',
-    borderRadius: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    gap: 12,
-  },
-  textInput: {
-    flex: 1,
-    fontSize: 15,
-    color: '#111827',
-    maxHeight: 100,
-    paddingVertical: 8,
-  },
-  sendButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#EFF6FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default ChatDetailScreen; 

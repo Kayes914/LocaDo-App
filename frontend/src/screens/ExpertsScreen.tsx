@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { BottomNavigation } from '../components/navigation';
 import SearchHeader from '../components/common/SearchHeader';
+import { useTheme } from '../contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
@@ -41,6 +42,7 @@ interface ExpertsPageProps {
 }
 
 const ExpertsPage: React.FC<ExpertsPageProps> = ({ navigation }) => {
+  const { colors } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -144,6 +146,171 @@ const ExpertsPage: React.FC<ExpertsPageProps> = ({ navigation }) => {
     }
   };
 
+  // Dynamic styles based on theme
+  const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: {
+      flex: 1,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollViewContent: {
+      paddingBottom: 80,
+      paddingHorizontal: 16,
+      paddingTop: 16,
+    },
+    categoriesContainer: {
+      marginBottom: 24,
+    },
+    categoriesContent: {
+      paddingHorizontal: 0,
+    },
+    categoryButton: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: colors.surfaceSecondary,
+      borderRadius: 12,
+      marginRight: 12,
+    },
+    categoryButtonActive: {
+      backgroundColor: colors.primary,
+    },
+    categoryText: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.textSecondary,
+    },
+    categoryTextActive: {
+      color: 'white',
+    },
+    expertsContainer: {
+      padding: 0,
+    },
+    expertCard: {
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 3,
+      elevation: 2,
+    },
+    expertBasicInfo: {
+      flexDirection: 'row',
+      marginBottom: 16,
+    },
+    expertImageContainer: {
+      position: 'relative',
+      marginRight: 12,
+    },
+    expertImage: {
+      width: 52,
+      height: 52,
+      borderRadius: 26,
+    },
+    verifiedBadge: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      width: 16,
+      height: 16,
+      backgroundColor: colors.success,
+      borderRadius: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 1.5,
+      borderColor: colors.card,
+    },
+    expertDetails: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    expertName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 2,
+    },
+    expertProfession: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      marginBottom: 2,
+    },
+    expertExperience: {
+      fontSize: 12,
+      color: colors.textTertiary,
+    },
+    expertMetadata: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    ratingArea: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    ratingContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    ratingText: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.text,
+      marginLeft: 4,
+    },
+    reviewsText: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      marginLeft: 4,
+    },
+    locationContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    locationText: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      marginLeft: 4,
+    },
+    actionButtons: {
+      flexDirection: 'row',
+      gap: 16,
+    },
+    actionButton: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 12,
+      borderRadius: 8,
+      gap: 8,
+    },
+    chatButton: {
+      backgroundColor: colors.primary,
+    },
+    callButton: {
+      backgroundColor: colors.surfaceSecondary,
+    },
+    chatButtonText: {
+      color: 'white',
+      fontSize: 14,
+      fontWeight: '500',
+    },
+    callButtonText: {
+      color: colors.text,
+      fontSize: 14,
+      fontWeight: '500',
+    },
+  });
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -217,7 +384,7 @@ const ExpertsPage: React.FC<ExpertsPageProps> = ({ navigation }) => {
                     <Text style={styles.reviewsText}>({expert.reviews} reviews)</Text>
                   </View>
                   <View style={styles.locationContainer}>
-                    <Ionicons name="location-outline" size={16} color="#6B7280" />
+                    <Ionicons name="location-outline" size={16} color={colors.textSecondary} />
                     <Text style={styles.locationText}>{expert.area}</Text>
                   </View>
                 </View>
@@ -234,7 +401,7 @@ const ExpertsPage: React.FC<ExpertsPageProps> = ({ navigation }) => {
                     style={[styles.actionButton, styles.callButton]}
                     onPress={() => handleCallPress(expert.id)}
                   >
-                    <Ionicons name="call-outline" size={16} color="#374151" />
+                    <Ionicons name="call-outline" size={16} color={colors.text} />
                     <Text style={styles.callButtonText}>Call</Text>
                   </TouchableOpacity>
                 </View>
@@ -250,170 +417,6 @@ const ExpertsPage: React.FC<ExpertsPageProps> = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#F9FAFB',
-  },
-  container: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollViewContent: {
-    paddingBottom: 80, // Increased padding for bottom navigation
-    paddingHorizontal: 16, // Consistent horizontal padding
-    paddingTop: 16, // Add top padding for content
-  },
-  categoriesContainer: {
-    marginBottom: 24, // Increased spacing between sections
-  },
-  categoriesContent: {
-    paddingHorizontal: 0, // Categories already have padding
-  },
-  categoryButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 12,
-    marginRight: 12,
-  },
-  categoryButtonActive: {
-    backgroundColor: '#3B82F6',
-  },
-  categoryText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#6B7280',
-  },
-  categoryTextActive: {
-    color: 'white',
-  },
-  expertsContainer: {
-    padding: 0, // Cards have their own padding
-  },
-  expertCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20, // Increased spacing between cards
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  expertBasicInfo: {
-    flexDirection: 'row',
-    marginBottom: 16, // Increased spacing
-  },
-  expertImageContainer: {
-    position: 'relative',
-    marginRight: 12,
-  },
-  expertImage: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-  },
-  verifiedBadge: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 16,
-    height: 16,
-    backgroundColor: '#10B981',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: 'white',
-  },
-  expertDetails: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  expertName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 2,
-  },
-  expertProfession: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 2,
-  },
-  expertExperience: {
-    fontSize: 12,
-    color: '#9CA3AF',
-  },
-  expertMetadata: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20, // Increased spacing
-  },
-  ratingArea: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ratingText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#111827',
-    marginLeft: 4,
-  },
-  reviewsText: {
-    fontSize: 13,
-    color: '#6B7280',
-    marginLeft: 4,
-  },
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  locationText: {
-    fontSize: 13,
-    color: '#6B7280',
-    marginLeft: 4,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: 16, // Increased spacing between buttons
-  },
-  actionButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12, // Increased button padding
-    borderRadius: 8,
-    gap: 8,
-  },
-  chatButton: {
-    backgroundColor: '#3B82F6',
-  },
-  callButton: {
-    backgroundColor: '#F3F4F6',
-  },
-  chatButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  callButtonText: {
-    color: '#374151',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-});
 
 export default ExpertsPage;
 

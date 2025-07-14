@@ -12,6 +12,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Conversation } from '../types/item';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ChatListScreenProps {
   navigation?: {
@@ -22,6 +23,7 @@ interface ChatListScreenProps {
 
 const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+  const { isDarkMode, colors } = useTheme();
 
   // Sample conversations data
   const conversations: Conversation[] = [
@@ -152,28 +154,219 @@ const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) => {
           </View>
 
           <View style={styles.locationContainer}>
-            <Ionicons name="location" size={12} color="#9CA3AF" />
+            <Ionicons name="location" size={12} color={colors.textTertiary} />
             <Text style={styles.locationText}>{conversation.otherUser.location}</Text>
           </View>
         </View>
       </View>
-
-
     </TouchableOpacity>
   );
 
+  // Dynamic styles based on theme
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+      paddingVertical: 16,
+      backgroundColor: colors.card,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    backButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: colors.surfaceSecondary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    headerTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    searchButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: colors.surfaceSecondary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    chatSummary: {
+      paddingHorizontal: 20,
+      paddingVertical: 12,
+      backgroundColor: colors.card,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    summaryText: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      fontWeight: '500',
+    },
+    conversationsList: {
+      flex: 1,
+    },
+    conversationItem: {
+      backgroundColor: colors.card,
+      marginHorizontal: 16,
+      marginVertical: 4,
+      borderRadius: 12,
+      overflow: 'hidden',
+      position: 'relative',
+    },
+    conversationContent: {
+      flexDirection: 'row',
+      padding: 16,
+      gap: 12,
+    },
+    itemImageContainer: {
+      position: 'relative',
+    },
+    itemImage: {
+      width: 56,
+      height: 56,
+      borderRadius: 8,
+      backgroundColor: colors.surfaceSecondary,
+    },
+    rentTag: {
+      position: 'absolute',
+      bottom: 4,
+      right: 4,
+      backgroundColor: colors.warning,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
+    },
+    rentTagText: {
+      fontSize: 8,
+      color: '#FFFFFF',
+      fontWeight: '700',
+    },
+    conversationDetails: {
+      flex: 1,
+      gap: 4,
+    },
+    conversationHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    otherUserName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    timeAndBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    messageTime: {
+      fontSize: 12,
+      color: colors.textTertiary,
+    },
+    unreadBadge: {
+      backgroundColor: colors.primary,
+      borderRadius: 10,
+      minWidth: 20,
+      height: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 6,
+    },
+    unreadCount: {
+      fontSize: 11,
+      color: '#FFFFFF',
+      fontWeight: '600',
+    },
+    itemTitle: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      fontWeight: '500',
+    },
+    lastMessageContainer: {
+      marginTop: 2,
+    },
+    lastMessage: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      lineHeight: 18,
+    },
+    unreadMessage: {
+      color: colors.text,
+      fontWeight: '500',
+    },
+    locationContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      marginTop: 4,
+    },
+    locationText: {
+      fontSize: 11,
+      color: colors.textTertiary,
+    },
+    inactiveOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: colors.overlay,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    inactiveText: {
+      fontSize: 12,
+      color: colors.textTertiary,
+      fontWeight: '500',
+      backgroundColor: colors.card,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 4,
+    },
+    emptyState: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 40,
+      paddingTop: 100,
+    },
+    emptyTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+      marginTop: 16,
+      marginBottom: 8,
+    },
+    emptySubtitle: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      lineHeight: 20,
+    },
+  });
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <StatusBar style="dark" />
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
       
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={navigation?.goBack}>
-          <Ionicons name="arrow-back" size={22} color="#374151" />
+          <Ionicons name="arrow-back" size={22} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Chats</Text>
         <TouchableOpacity style={styles.searchButton}>
-          <Ionicons name="search-outline" size={22} color="#374151" />
+          <Ionicons name="search-outline" size={22} color={colors.text} />
         </TouchableOpacity>
       </View>
 
@@ -190,7 +383,7 @@ const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) => {
         {/* Empty state for new users */}
         {conversations.length === 0 && (
           <View style={styles.emptyState}>
-            <Ionicons name="chatbubbles-outline" size={64} color="#D1D5DB" />
+            <Ionicons name="chatbubbles-outline" size={64} color={colors.textTertiary} />
             <Text style={styles.emptyTitle}>No conversations yet</Text>
             <Text style={styles.emptySubtitle}>
               Start chatting with sellers and buyers when you interact with listings
@@ -201,197 +394,5 @@ const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F9FAFB',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  searchButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F9FAFB',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  chatSummary: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  summaryText: {
-    fontSize: 13,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
-  conversationsList: {
-    flex: 1,
-  },
-  conversationItem: {
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 16,
-    marginVertical: 4,
-    borderRadius: 12,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  conversationContent: {
-    flexDirection: 'row',
-    padding: 16,
-    gap: 12,
-  },
-  itemImageContainer: {
-    position: 'relative',
-  },
-  itemImage: {
-    width: 56,
-    height: 56,
-    borderRadius: 8,
-    backgroundColor: '#F3F4F6',
-  },
-  rentTag: {
-    position: 'absolute',
-    bottom: 4,
-    right: 4,
-    backgroundColor: '#F59E0B',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  rentTagText: {
-    fontSize: 8,
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  conversationDetails: {
-    flex: 1,
-    gap: 4,
-  },
-  conversationHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  otherUserName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  timeAndBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  messageTime: {
-    fontSize: 12,
-    color: '#9CA3AF',
-  },
-  unreadBadge: {
-    backgroundColor: '#3B82F6',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 6,
-  },
-  unreadCount: {
-    fontSize: 11,
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  itemTitle: {
-    fontSize: 13,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
-  lastMessageContainer: {
-    marginTop: 2,
-  },
-  lastMessage: {
-    fontSize: 14,
-    color: '#374151',
-    lineHeight: 18,
-  },
-  unreadMessage: {
-    color: '#111827',
-    fontWeight: '500',
-  },
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 4,
-  },
-  locationText: {
-    fontSize: 11,
-    color: '#9CA3AF',
-  },
-  inactiveOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inactiveText: {
-    fontSize: 12,
-    color: '#9CA3AF',
-    fontWeight: '500',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-    paddingTop: 100,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#374151',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptySubtitle: {
-    fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-});
 
 export default ChatListScreen; 

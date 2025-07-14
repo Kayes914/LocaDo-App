@@ -6,6 +6,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { BottomNavigation } from '../components/navigation';
 import { SearchHeader } from '../components/common';
 import { BuySellItem, HelpPost, WorkOffer } from '../types/item';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface HomeScreenProps {
   navigation?: {
@@ -15,6 +16,7 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+  const { isDarkMode, colors } = useTheme();
   const [searchText, setSearchText] = React.useState('');
   const [showSuggestions, setShowSuggestions] = React.useState(false);
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
@@ -356,9 +358,227 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  // Dynamic styles based on theme
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    content: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    section: {
+      marginBottom: 28,
+    },
+    sectionHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      marginBottom: 16,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    viewAll: {
+      fontSize: 14,
+      color: colors.primary,
+      fontWeight: '500',
+    },
+    cardsContainer: {
+      paddingLeft: 20,
+      paddingRight: 8,
+    },
+    
+    // Buy & Sell Cards
+    card: {
+      width: 140,
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      marginRight: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+      position: 'relative',
+      height: 200,
+      overflow: 'hidden',
+    },
+    cardImage: {
+      width: '100%',
+      height: 100,
+      backgroundColor: colors.surfaceSecondary,
+      borderTopLeftRadius: 11,
+      borderTopRightRadius: 11,
+    },
+    cardContent: {
+      padding: 10,
+      flex: 1,
+      justifyContent: 'space-between',
+    },
+    cardTitle: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.text,
+      marginBottom: 6,
+      lineHeight: 17,
+      height: 34,
+      textAlignVertical: 'top',
+    },
+    cardPrice: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 4,
+    },
+    cardLocation: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      fontWeight: '400',
+    },
+    typeTag: {
+      position: 'absolute',
+      top: 8,
+      right: 8,
+      backgroundColor: colors.success,
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: colors.card,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2,
+      shadowRadius: 2,
+      elevation: 3,
+    },
+    typeText: {
+      fontSize: 9,
+      color: '#FFFFFF',
+      fontWeight: '700',
+      letterSpacing: 0.5,
+    },
+
+    // Help Cards
+    helpCard: {
+      width: 200,
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      marginRight: 16,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    helpHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 8,
+    },
+    categoryBadge: {
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+      borderRadius: 6,
+      backgroundColor: colors.surfaceSecondary,
+    },
+    techBadge: {
+      backgroundColor: isDarkMode ? '#1E3A8A' : '#EFF6FF',
+    },
+    studyBadge: {
+      backgroundColor: isDarkMode ? '#92400E' : '#FFFBEB',
+    },
+    homeBadge: {
+      backgroundColor: isDarkMode ? '#14532D' : '#F0FDF4',
+    },
+    categoryText: {
+      fontSize: 10,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    helpTime: {
+      fontSize: 11,
+      color: colors.textTertiary,
+    },
+    helpTitle: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.text,
+      marginBottom: 12,
+      lineHeight: 18,
+    },
+    helpFooter: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    helpLocation: {
+      fontSize: 12,
+      color: colors.textSecondary,
+    },
+    urgencyTag: {
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
+      backgroundColor: colors.surfaceSecondary,
+    },
+    urgentTag: {
+      backgroundColor: isDarkMode ? '#7F1D1D' : '#FEF2F2',
+    },
+    urgencyText: {
+      fontSize: 9,
+      fontWeight: '600',
+      color: colors.text,
+    },
+
+    // Work Cards
+    workCard: {
+      width: 160,
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      marginRight: 16,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    workHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 8,
+      gap: 8,
+    },
+    workTitle: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.text,
+      lineHeight: 18,
+      flex: 1,
+    },
+    workBudget: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.success,
+      marginBottom: 12,
+    },
+    workFooter: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    workLocation: {
+      fontSize: 12,
+      color: colors.textSecondary,
+    },
+    workTime: {
+      fontSize: 11,
+      color: colors.textTertiary,
+    },
+  });
+
   return (
     <View style={styles.container}>
-      <StatusBar style="dark" />
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
       
       <SearchHeader
         navigation={navigation!}
@@ -440,227 +660,5 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
-
-
-  content: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
-  section: {
-    marginBottom: 28,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  viewAll: {
-    fontSize: 14,
-    color: '#3B82F6',
-    fontWeight: '500',
-  },
-  cardsContainer: {
-    paddingLeft: 20,
-    paddingRight: 8,
-  },
-  
-  // Buy & Sell Cards
-  card: {
-    width: 140,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginRight: 16,
-    borderWidth: 1,
-    borderColor: '#F1F5F9',
-    position: 'relative',
-    height: 200, // Fixed height for consistent card sizes
-    overflow: 'hidden', // Prevent content overflow
-  },
-  cardImage: {
-    width: '100%',
-    height: 100, // Reduced from 80 to match ItemsScreen
-    backgroundColor: '#F3F4F6',
-    borderTopLeftRadius: 11,
-    borderTopRightRadius: 11,
-  },
-  cardContent: {
-    padding: 10, // Reduced from 12 to match ItemsScreen
-    flex: 1, // Take remaining space
-    justifyContent: 'space-between', // Distribute content evenly
-  },
-  cardTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111827',
-    marginBottom: 6,
-    lineHeight: 17,
-    height: 34, // Fixed height for 2 lines (17 * 2)
-    textAlignVertical: 'top',
-  },
-  cardPrice: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 4,
-  },
-  cardLocation: {
-    fontSize: 12,
-    color: '#6B7280',
-    fontWeight: '400',
-  },
-  typeTag: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: '#10B981',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 3,
-  },
-  typeText: {
-    fontSize: 9,
-    color: '#FFFFFF',
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-
-  // Help Cards
-  helpCard: {
-    width: 200,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginRight: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#F1F5F9',
-  },
-  helpHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  categoryBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    backgroundColor: '#F3F4F6',
-  },
-  techBadge: {
-    backgroundColor: '#EFF6FF',
-  },
-  studyBadge: {
-    backgroundColor: '#FFFBEB',
-  },
-  homeBadge: {
-    backgroundColor: '#F0FDF4',
-  },
-  categoryText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#374151',
-  },
-  helpTime: {
-    fontSize: 11,
-    color: '#9CA3AF',
-  },
-  helpTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111827',
-    marginBottom: 12,
-    lineHeight: 18,
-  },
-  helpFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  helpLocation: {
-    fontSize: 12,
-    color: '#6B7280',
-  },
-  urgencyTag: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    backgroundColor: '#F3F4F6',
-  },
-  urgentTag: {
-    backgroundColor: '#FEF2F2',
-  },
-  urgencyText: {
-    fontSize: 9,
-    fontWeight: '600',
-    color: '#374151',
-  },
-
-  // Work Cards
-  workCard: {
-    width: 160,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginRight: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#F1F5F9',
-  },
-  workHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-    gap: 8,
-  },
-  workTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111827',
-    lineHeight: 18,
-    flex: 1,
-  },
-  workBudget: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#059669',
-    marginBottom: 12,
-  },
-  workFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  workLocation: {
-    fontSize: 12,
-    color: '#6B7280',
-  },
-  workTime: {
-    fontSize: 11,
-    color: '#9CA3AF',
-  },
-
-
-
-});
 
 export default HomeScreen; 

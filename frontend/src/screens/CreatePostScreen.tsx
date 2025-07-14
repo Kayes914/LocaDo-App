@@ -17,6 +17,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomNavigation } from '../components/navigation';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface CreatePostScreenProps {
   navigation?: {
@@ -31,6 +32,7 @@ interface ImageAsset {
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+  const { isDarkMode, colors } = useTheme();
   const [activeTab, setActiveTab] = useState<'sell' | 'help' | 'work'>('sell');
   
   // Sell/Rent Tab State
@@ -228,7 +230,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           value={sellTitle}
           onChangeText={setSellTitle}
           placeholder="What are you selling?"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.inputPlaceholder}
         />
       </View>
 
@@ -492,9 +494,324 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
     </ScrollView>
   );
 
+  // Dynamic styles based on theme
+  const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: {
+      flex: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 24,
+      paddingBottom: 20,
+      backgroundColor: colors.card,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05,
+      shadowRadius: 8,
+      elevation: 3,
+    },
+    headerTitle: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: colors.text,
+      letterSpacing: -0.5,
+    },
+    headerPostButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.primary,
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      borderRadius: 20,
+      gap: 6,
+      shadowColor: colors.primary,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    headerPostButtonText: {
+      color: 'white',
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    tabNavigation: {
+      flexDirection: 'row',
+      backgroundColor: colors.card,
+      paddingHorizontal: 16,
+      paddingTop: 8,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    tab: {
+      flex: 1,
+      paddingVertical: 16,
+      paddingHorizontal: 8,
+      alignItems: 'center',
+      borderBottomWidth: 3,
+      borderBottomColor: 'transparent',
+      borderRadius: 8,
+      marginHorizontal: 4,
+      gap: 4,
+    },
+    activeTab: {
+      borderBottomColor: colors.primary,
+      backgroundColor: colors.primaryLight,
+    },
+    tabText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.textSecondary,
+    },
+    activeTabText: {
+      color: colors.primary,
+      fontWeight: '700',
+    },
+    contentContainer: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    tabContent: {
+      flex: 1,
+      paddingHorizontal: 24,
+      paddingTop: 24,
+      paddingBottom: 40,
+    },
+    inputGroup: {
+      marginBottom: 24,
+    },
+    label: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 10,
+      letterSpacing: -0.2,
+    },
+    textInput: {
+      borderWidth: 2,
+      borderColor: colors.inputBorder,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 16,
+      backgroundColor: colors.input,
+      color: colors.text,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 3,
+      elevation: 2,
+    },
+    inputHeight: {
+      height: 56,
+    },
+    multilineInput: {
+      height: 120,
+      textAlignVertical: 'top',
+      paddingTop: 16,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      gap: 16,
+      justifyContent: 'space-between',
+    },
+    halfWidth: {
+      flex: 1,
+    },
+    toggleContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    toggleText: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      fontWeight: '500',
+    },
+    toggleTextActive: {
+      color: colors.primary,
+      fontWeight: '700',
+    },
+    imageUploadContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 16,
+      marginTop: 8,
+    },
+    imagePreview: {
+      position: 'relative',
+      width: 90,
+      height: 90,
+      borderRadius: 16,
+      overflow: 'hidden',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4,
+    },
+    previewImage: {
+      width: 90,
+      height: 90,
+      borderRadius: 16,
+    },
+    removeImageButton: {
+      position: 'absolute',
+      top: -6,
+      right: -6,
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      backgroundColor: colors.error,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    addImageButton: {
+      width: 90,
+      height: 90,
+      borderWidth: 2,
+      borderColor: colors.border,
+      borderStyle: 'dashed',
+      borderRadius: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.surfaceSecondary,
+    },
+    addImageText: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      marginTop: 6,
+      fontWeight: '500',
+    },
+    locationButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.input,
+      borderWidth: 2,
+      borderColor: colors.inputBorder,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 3,
+      elevation: 2,
+    },
+    locationText: {
+      flex: 1,
+      fontSize: 16,
+      color: colors.text,
+      marginLeft: 12,
+      fontWeight: '500',
+    },
+    radioOption: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 12,
+      backgroundColor: colors.card,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.border,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.03,
+      shadowRadius: 2,
+      elevation: 1,
+    },
+    radioLabel: {
+      fontSize: 16,
+      color: colors.text,
+      marginLeft: 12,
+      fontWeight: '500',
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: colors.overlay,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 24,
+    },
+    modalContainer: {
+      backgroundColor: colors.modal,
+      padding: 24,
+      borderRadius: 20,
+      width: '100%',
+      maxWidth: 400,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.25,
+      shadowRadius: 20,
+      elevation: 10,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 16,
+      textAlign: 'center',
+    },
+    modalText: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      marginBottom: 20,
+      textAlign: 'center',
+    },
+    modalButtons: {
+      flexDirection: 'row',
+      gap: 16,
+      marginTop: 24,
+    },
+    modalButton: {
+      flex: 1,
+      paddingVertical: 14,
+      borderRadius: 12,
+      alignItems: 'center',
+    },
+    cancelButton: {
+      backgroundColor: colors.buttonSecondary,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    confirmButton: {
+      backgroundColor: colors.primary,
+      shadowColor: colors.primary,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    cancelButtonText: {
+      color: colors.buttonTextSecondary,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    confirmButtonText: {
+      color: 'white',
+      fontSize: 16,
+      fontWeight: '700',
+    },
+  });
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar style="dark" />
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
       
       <View style={styles.container}>
         {/* Header with Post Button */}
@@ -515,7 +832,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
             <Ionicons 
               name={activeTab === 'sell' ? 'storefront' : 'storefront-outline'} 
               size={20} 
-              color={activeTab === 'sell' ? '#3B82F6' : '#64748B'} 
+              color={activeTab === 'sell' ? colors.primary : colors.textSecondary} 
             />
             <Text style={[styles.tabText, activeTab === 'sell' && styles.activeTabText]}>
               Sell
@@ -528,7 +845,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
             <Ionicons 
               name={activeTab === 'help' ? 'help-circle' : 'help-circle-outline'} 
               size={20} 
-              color={activeTab === 'help' ? '#3B82F6' : '#64748B'} 
+              color={activeTab === 'help' ? colors.primary : colors.textSecondary} 
             />
             <Text style={[styles.tabText, activeTab === 'help' && styles.activeTabText]}>
               Help
@@ -541,7 +858,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
             <Ionicons 
               name={activeTab === 'work' ? 'construct' : 'construct-outline'} 
               size={20} 
-              color={activeTab === 'work' ? '#3B82F6' : '#64748B'} 
+              color={activeTab === 'work' ? colors.primary : colors.textSecondary} 
             />
             <Text style={[styles.tabText, activeTab === 'work' && styles.activeTabText]}>
               Work
@@ -572,7 +889,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
                 value={locationText}
                 onChangeText={setLocationText}
                 placeholder="Current Location"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor={colors.inputPlaceholder}
               />
               <View style={styles.modalButtons}>
                 <TouchableOpacity
@@ -600,319 +917,5 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  container: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingBottom: 20,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1E293B',
-    letterSpacing: -0.5,
-  },
-  headerPostButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#3B82F6',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
-    gap: 6,
-    shadowColor: '#3B82F6',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  headerPostButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  tabNavigation: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 16,
-    paddingHorizontal: 8,
-    alignItems: 'center',
-    borderBottomWidth: 3,
-    borderBottomColor: 'transparent',
-    borderRadius: 8,
-    marginHorizontal: 4,
-    gap: 4,
-  },
-  activeTab: {
-    borderBottomColor: '#3B82F6',
-    backgroundColor: '#F0F9FF',
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#64748B',
-  },
-  activeTabText: {
-    color: '#3B82F6',
-    fontWeight: '700',
-  },
-  contentContainer: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  tabContent: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 40,
-  },
-  inputGroup: {
-    marginBottom: 24,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#334155',
-    marginBottom: 10,
-    letterSpacing: -0.2,
-  },
-  textInput: {
-    borderWidth: 2,
-    borderColor: '#E2E8F0',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    backgroundColor: 'white',
-    color: '#1E293B',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  inputHeight: {
-    height: 56,
-  },
-  multilineInput: {
-    height: 120,
-    textAlignVertical: 'top',
-    paddingTop: 16,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: 16,
-    justifyContent: 'space-between',
-  },
-  halfWidth: {
-    flex: 1,
-  },
-  toggleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  toggleText: {
-    fontSize: 16,
-    color: '#64748B',
-    fontWeight: '500',
-  },
-  toggleTextActive: {
-    color: '#3B82F6',
-    fontWeight: '700',
-  },
-  imageUploadContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-    marginTop: 8,
-  },
-  imagePreview: {
-    position: 'relative',
-    width: 90,
-    height: 90,
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  previewImage: {
-    width: 90,
-    height: 90,
-    borderRadius: 16,
-  },
-  removeImageButton: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#EF4444',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  addImageButton: {
-    width: 90,
-    height: 90,
-    borderWidth: 2,
-    borderColor: '#CBD5E1',
-    borderStyle: 'dashed',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-  },
-  addImageText: {
-    fontSize: 12,
-    color: '#64748B',
-    marginTop: 6,
-    fontWeight: '500',
-  },
-  locationButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#E2E8F0',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  locationText: {
-    flex: 1,
-    fontSize: 16,
-    color: '#1E293B',
-    marginLeft: 12,
-    fontWeight: '500',
-  },
-  radioOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-    backgroundColor: 'white',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  radioLabel: {
-    fontSize: 16,
-    color: '#334155',
-    marginLeft: 12,
-    fontWeight: '500',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    padding: 24,
-    borderRadius: 20,
-    width: '100%',
-    maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  modalText: {
-    fontSize: 16,
-    color: '#64748B',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    gap: 16,
-    marginTop: 24,
-  },
-  modalButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#F1F5F9',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  confirmButton: {
-    backgroundColor: '#3B82F6',
-    shadowColor: '#3B82F6',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  cancelButtonText: {
-    color: '#475569',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  confirmButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-});
 
 export default CreatePostScreen;
