@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { SearchHeader } from '../components/common';
 import { BuySellItem, HelpPost, WorkOffer } from '../types/item';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface SearchScreenProps {
   navigation: {
@@ -39,6 +40,7 @@ interface FilterOptions {
 
 const SearchScreen: React.FC<SearchScreenProps> = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
+  const { isDarkMode, colors } = useTheme();
   const [searchQuery, setSearchQuery] = useState(route?.params?.searchQuery || '');
   const [showFilters, setShowFilters] = useState(false);
   const [activeTab, setActiveTab] = useState<'all' | 'items' | 'services' | 'help'>('all');
@@ -382,8 +384,8 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation, route }) => {
           
           <View style={styles.itemFooter}>
             <View style={styles.locationRow}>
-              <Ionicons name="location-outline" size={14} color="#6B7280" />
-              <Text style={styles.itemLocation}>{item.location}</Text>
+            <Ionicons name="location-outline" size={14} color={colors.textSecondary} />
+            <Text style={styles.itemLocation}>{item.location}</Text>
             </View>
             
             <View style={styles.categoryRow}>
@@ -432,9 +434,300 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation, route }) => {
 
   const filteredResults = getFilteredResults();
 
+  // Dynamic styles based on theme
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    filterButton: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.surfaceSecondary,
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'relative',
+    },
+    filterBadge: {
+      position: 'absolute',
+      top: 2,
+      right: 2,
+      width: 16,
+      height: 16,
+      borderRadius: 8,
+      backgroundColor: colors.error,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    filterBadgeText: {
+      fontSize: 9,
+      color: '#FFFFFF',
+      fontWeight: '600',
+    },
+    tabContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.card,
+      paddingHorizontal: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    tabsRow: {
+      flex: 1,
+      flexDirection: 'row',
+    },
+    tab: {
+      paddingVertical: 12,
+      paddingHorizontal: 12,
+      marginRight: 6,
+    },
+    activeTab: {
+      borderBottomWidth: 2,
+      borderBottomColor: colors.primary,
+    },
+    tabText: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      fontWeight: '500',
+    },
+    activeTabText: {
+      color: colors.primary,
+      fontWeight: '600',
+    },
+    filterButtonTab: {
+      position: 'relative',
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surfaceSecondary,
+      borderRadius: 16,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      marginLeft: 8,
+    },
+    filterButtonContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    filterText: {
+      fontSize: 12,
+      color: colors.text,
+      fontWeight: '500',
+    },
+    resultsHeader: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: colors.background,
+    },
+    resultsCount: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      fontWeight: '500',
+    },
+    listContainer: {
+      padding: 16,
+    },
+    itemCard: {
+      flexDirection: 'row',
+      backgroundColor: colors.card,
+      borderRadius: 10,
+      marginBottom: 12,
+      borderWidth: 1,
+      borderColor: colors.border,
+      overflow: 'hidden',
+    },
+    itemImage: {
+      width: 80,
+      height: 80,
+      backgroundColor: colors.surfaceSecondary,
+    },
+    itemContent: {
+      flex: 1,
+      padding: 12,
+    },
+    itemHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 6,
+    },
+    itemTitle: {
+      flex: 1,
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.text,
+      marginRight: 6,
+    },
+    itemPrice: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 6,
+    },
+    itemFooter: {
+      gap: 4,
+    },
+    locationRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    itemLocation: {
+      fontSize: 13,
+      color: colors.textSecondary,
+    },
+    categoryRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    itemCategory: {
+      fontSize: 12,
+      color: colors.secondary,
+      fontWeight: '500',
+    },
+    itemCondition: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      marginLeft: 4,
+    },
+    itemTime: {
+      fontSize: 11,
+      color: colors.textTertiary,
+      marginTop: 4,
+    },
+    rentBadge: {
+      backgroundColor: colors.warning,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
+    },
+    rentBadgeText: {
+      fontSize: 8,
+      color: '#FFFFFF',
+      fontWeight: '700',
+    },
+    urgencyBadge: {
+      backgroundColor: colors.surfaceSecondary,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
+    },
+    urgentBadge: {
+      backgroundColor: colors.errorLight,
+    },
+    urgencyText: {
+      fontSize: 8,
+      color: colors.text,
+      fontWeight: '600',
+    },
+    serviceBadge: {
+      backgroundColor: colors.secondary,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
+    },
+    serviceBadgeText: {
+      fontSize: 8,
+      color: '#FFFFFF',
+      fontWeight: '700',
+    },
+    // Filter Modal Styles
+    filterModal: {
+      flex: 1,
+      backgroundColor: colors.modal,
+    },
+    filterHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    filterModalTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    cancelText: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      fontWeight: '500',
+    },
+    clearText: {
+      fontSize: 14,
+      color: colors.error,
+      fontWeight: '500',
+    },
+    filterContent: {
+      flex: 1,
+    },
+    filterSection: {
+      paddingHorizontal: 16,
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    filterTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 12,
+    },
+    filterOptions: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    filterChip: {
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 16,
+      backgroundColor: colors.surfaceSecondary,
+      borderWidth: 1,
+      borderColor: colors.border,
+      minHeight: 32,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    filterChipActive: {
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+    },
+    filterChipText: {
+      fontSize: 12,
+      color: colors.text,
+      fontWeight: '500',
+      textAlign: 'center',
+    },
+    filterChipTextActive: {
+      color: '#FFFFFF',
+    },
+    filterActions: {
+      paddingHorizontal: 16,
+      paddingTop: 12,
+      paddingBottom: 16,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    applyButton: {
+      backgroundColor: colors.primary,
+      borderRadius: 8,
+      paddingVertical: 12,
+      alignItems: 'center',
+    },
+    applyButtonText: {
+      fontSize: 14,
+      color: '#FFFFFF',
+      fontWeight: '600',
+    },
+  });
+
   return (
     <View style={styles.container}>
-      <StatusBar style="dark" />
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
       
       <SearchHeader
         navigation={navigation}
@@ -471,7 +764,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation, route }) => {
           onPress={() => setShowFilters(true)}
         >
           <View style={styles.filterButtonContent}>
-            <Ionicons name="filter-outline" size={16} color="#374151" />
+            <Ionicons name="filter-outline" size={16} color={colors.text} />
             <Text style={styles.filterText}>Filter</Text>
           </View>
           {getActiveFilterCount() > 0 && (
@@ -559,298 +852,5 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation, route }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
-
-  filterButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F9FAFB',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  filterBadge: {
-    position: 'absolute',
-    top: 2,
-    right: 2,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: '#EF4444',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  filterBadgeText: {
-    fontSize: 9,
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-
-  tabContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  tabsRow: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  tab: {
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    marginRight: 6,
-  },
-  activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#3B82F6',
-  },
-  tabText: {
-    fontSize: 13,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
-  activeTabText: {
-    color: '#3B82F6',
-    fontWeight: '600',
-  },
-  filterButtonTab: {
-    position: 'relative',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F9FAFB',
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginLeft: 8,
-  },
-  filterButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  filterText: {
-    fontSize: 12,
-    color: '#374151',
-    fontWeight: '500',
-  },
-  resultsHeader: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#FAFAFA',
-  },
-  resultsCount: {
-    fontSize: 13,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
-  listContainer: {
-    padding: 16,
-  },
-  itemCard: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#F1F5F9',
-    overflow: 'hidden',
-  },
-  itemImage: {
-    width: 80,
-    height: 80,
-    backgroundColor: '#F3F4F6',
-  },
-  itemContent: {
-    flex: 1,
-    padding: 12,
-  },
-  itemHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 6,
-  },
-  itemTitle: {
-    flex: 1,
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#111827',
-    marginRight: 6,
-  },
-  itemPrice: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 6,
-  },
-  itemFooter: {
-    gap: 4,
-  },
-  locationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  itemLocation: {
-    fontSize: 13,
-    color: '#6B7280',
-  },
-  categoryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  itemCategory: {
-    fontSize: 12,
-    color: '#8B5CF6',
-    fontWeight: '500',
-  },
-  itemCondition: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginLeft: 4,
-  },
-  itemTime: {
-    fontSize: 11,
-    color: '#9CA3AF',
-    marginTop: 4,
-  },
-  rentBadge: {
-    backgroundColor: '#F59E0B',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  rentBadgeText: {
-    fontSize: 8,
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  urgencyBadge: {
-    backgroundColor: '#E5E7EB',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  urgentBadge: {
-    backgroundColor: '#FEE2E2',
-  },
-  urgencyText: {
-    fontSize: 8,
-    color: '#374151',
-    fontWeight: '600',
-  },
-  serviceBadge: {
-    backgroundColor: '#8B5CF6',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  serviceBadgeText: {
-    fontSize: 8,
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-
-  // Filter Modal Styles
-  filterModal: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  filterHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  filterModalTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  cancelText: {
-    fontSize: 14,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
-  clearText: {
-    fontSize: 14,
-    color: '#EF4444',
-    fontWeight: '500',
-  },
-  filterContent: {
-    flex: 1,
-  },
-  filterSection: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  filterTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 12,
-  },
-  filterOptions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  filterChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: '#F9FAFB',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    minHeight: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  filterChipActive: {
-    backgroundColor: '#3B82F6',
-    borderColor: '#3B82F6',
-  },
-  filterChipText: {
-    fontSize: 12,
-    color: '#374151',
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  filterChipTextActive: {
-    color: '#FFFFFF',
-  },
-  filterActions: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
-  },
-  applyButton: {
-    backgroundColor: '#3B82F6',
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  applyButtonText: {
-    fontSize: 14,
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-});
 
 export default SearchScreen; 
