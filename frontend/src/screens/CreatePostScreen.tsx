@@ -18,6 +18,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomNavigation } from '../components/navigation';
 import { useTheme } from '../contexts/ThemeContext';
+import { postService, PostRequest } from '../services/api';
 
 interface CreatePostScreenProps {
   navigation?: {
@@ -104,11 +105,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
     }
   };
 
-  const handlePost = () => {
-    let postData: any = {
+  const handlePost = async () => {
+    let postData: PostRequest = {
       type: activeTab,
+      description: '',
       location: locationText,
-      timestamp: new Date().toISOString(),
     };
 
     switch (activeTab) {
@@ -123,8 +124,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           description: sellDescription,
           price: sellPrice,
           isRent,
-          images: sellImages,
           contactMethod: sellContactMethod,
+          images: sellImages.map(img => img.uri), // Convert to array of URIs
         };
         break;
       
@@ -136,8 +137,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
         postData = {
           ...postData,
           description: helpText,
-          image: helpImage,
           urgency: helpUrgency,
+          images: helpImage ? [helpImage.uri] : [], // Single image as array
         };
         break;
       
@@ -158,17 +159,32 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
         break;
     }
 
-    // Here you would typically send the data to your backend
-    console.log('Posting:', postData);
-    Alert.alert('Success', 'Your post has been created!', [
-      { text: 'OK', onPress: () => {
-        clearForm();
-        // Navigate to Posts screen to see the created post
-        if (navigation) {
-          navigation.navigate('Posts');
-        }
-      }}
-    ]);
+    try {
+      console.log('Sending post to backend:', postData);
+      
+      // Send data to backend
+      const response = await postService.createPost(postData);
+      
+      if (response.success) {
+        Alert.alert('Success', 'Your post has been created!', [
+          { 
+            text: 'OK', 
+            onPress: () => {
+              clearForm();
+              // Navigate to Posts screen to see the created post
+              if (navigation) {
+                navigation.navigate('Posts');
+              }
+            }
+          }
+        ]);
+      } else {
+        Alert.alert('Error', response.message || 'Failed to create post');
+      }
+    } catch (error) {
+      console.error('Error creating post:', error);
+      Alert.alert('Error', 'Network error. Please check your connection and try again.');
+    }
   };
 
   const clearForm = () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { 
   HomeScreen, 
   ItemsScreen,
@@ -12,7 +12,11 @@ import {
   ProfileScreen,
   CreatePostScreen
 } from '../screens';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 import { BuySellItem } from '../types';
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 // This is a simplified navigation demo
 // In a real app, you'd use React Navigation or similar
@@ -20,7 +24,7 @@ import { BuySellItem } from '../types';
 interface AppNavigatorProps {}
 
 interface NavigationStackItem {
-  screen: 'Home' | 'Items' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost';
+  screen: 'Home' | 'Items' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost' | 'Login' | 'Register';
   params?: {
     item?: BuySellItem;
     conversation?: any;
@@ -29,17 +33,31 @@ interface NavigationStackItem {
 }
 
 const AppNavigator: React.FC<AppNavigatorProps> = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+  const { colors } = useTheme();
+  
   const [navigationStack, setNavigationStack] = React.useState<NavigationStackItem[]>([
-    { screen: 'Home' }
+    { screen: 'Home' } // Default to Home, allowing guest browsing
   ]);
 
   const navigate = (screen: string, params?: any) => {
-    const newScreen = screen as 'Home' | 'Items' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost';
+    const newScreen = screen as 'Home' | 'Items' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost' | 'Login' | 'Register';
     
     setNavigationStack(prevStack => [
       ...prevStack,
       { screen: newScreen, params }
     ]);
+  };
+
+  const replace = (screen: string, params?: any) => {
+    const newScreen = screen as 'Home' | 'Items' | 'ItemDetails' | 'ChatList' | 'ChatDetail' | 'Search' | 'Experts' | 'Posts' | 'Profile' | 'CreatePost' | 'Login' | 'Register';
+    
+    // Replace the current screen instead of adding to stack
+    setNavigationStack(prevStack => {
+      const newStack = [...prevStack];
+      newStack[newStack.length - 1] = { screen: newScreen, params };
+      return newStack;
+    });
   };
 
   const goBack = () => {
@@ -55,12 +73,45 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
 
   const mockNavigation = {
     navigate,
+    replace,
     goBack
   };
 
   const getCurrentScreen = (): NavigationStackItem => {
     return navigationStack[navigationStack.length - 1] || { screen: 'Home' };
   };
+
+  // Update navigation stack when auth state changes
+  React.useEffect(() => {
+    if (!isLoading) {
+      if (isAuthenticated) {
+        // If user is authenticated but on auth screens, go to Home
+        const currentScreen = getCurrentScreen();
+        if (currentScreen.screen === 'Login' || currentScreen.screen === 'Register') {
+          setNavigationStack([{ screen: 'Home' }]);
+        }
+      } else {
+        // If user is not authenticated, allow guest browsing but handle explicit logout
+        const currentScreen = getCurrentScreen();
+        const mainScreens = ['Home', 'Items', 'Search', 'Experts', 'Posts', 'Profile', 'CreatePost'];
+        
+        // Only force redirect to Login if we're not on a main screen
+        // This allows guest browsing while still handling logout properly
+        if (!mainScreens.includes(currentScreen.screen)) {
+          setNavigationStack([{ screen: 'Login' }]);
+        }
+      }
+    }
+  }, [isAuthenticated, isLoading]);
+
+  // Show loading spinner while checking auth status
+  if (isLoading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   const renderScreen = () => {
     const currentScreen = getCurrentScreen();
@@ -102,6 +153,10 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
         return <ProfileScreen navigation={mockNavigation} />;
       case 'CreatePost':
         return <CreatePostScreen navigation={mockNavigation} />;
+      case 'Login':
+        return <LoginScreen navigation={mockNavigation} />;
+      case 'Register':
+        return <RegisterScreen navigation={mockNavigation} />;
       default:
         return <HomeScreen navigation={mockNavigation} />;
     }
@@ -117,6 +172,10 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -10,6 +10,7 @@ import {
   Alert,
   Modal,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,10 +18,12 @@ import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomNavigation } from '../components/navigation';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 
 interface ProfileScreenProps {
   navigation?: {
     navigate: (screen: string, params?: any) => void;
+    replace: (screen: string, params?: any) => void;
   };
 }
 
@@ -37,22 +40,24 @@ interface UserData {
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { isDarkMode, colors, toggleTheme } = useTheme();
+  const { user, isLoading, isAuthenticated, logout } = useAuth();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [chatNotifications, setChatNotifications] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  // Mock user data - in real app this would come from state/API
-  const DEFAULT_PROFILE_IMAGE = 'https://ui-avatars.com/api/?name=S+&background=random&size=150';
+  // Mock user data for logged in users - in real app this would come from user context
+  const DEFAULT_PROFILE_IMAGE = 'https://ui-avatars.com/api/?name=User&background=random&size=150';
 
   const [userData, setUserData] = useState<UserData>({
-    name: 'Sarah Ahmed',
-    phone: '+880 1716-345678',
+    name: user?.name || 'Guest User',
+    phone: user?.phone || '+880 1716-345678',
     phoneVerified: true,
-    area: 'Dhanmondi, Dhaka',
+    area: user?.location || 'Dhanmondi, Dhaka',
     trustScore: 4.8,
     skills: ['Tutoring', 'Math', 'Physics', 'English'],
-    profileImage: DEFAULT_PROFILE_IMAGE
+    profileImage: user?.avatar || DEFAULT_PROFILE_IMAGE
   });
 
   // Edit form state
@@ -171,13 +176,50 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   const handleLogout = () => {
     Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
+      'Sign Out',
+      'Are you sure you want to sign out of your account?',
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Logout', style: 'destructive', onPress: () => console.log('Logged out') }
+        { 
+          text: 'Cancel', 
+          style: 'cancel' 
+        },
+        { 
+          text: 'Sign Out', 
+          style: 'destructive', 
+          onPress: async () => {
+            try {
+              setIsLoggingOut(true);
+              await logout();
+              
+              // Navigate to Login screen
+              if (navigation) {
+                // Use setTimeout to ensure auth state is updated first
+                setTimeout(() => {
+                  navigation.replace('Login');
+                }, 100);
+              }
+            } catch (error) {
+              console.error('Logout error:', error);
+              Alert.alert('Error', 'Failed to sign out. Please try again.');
+            } finally {
+              setIsLoggingOut(false);
+            }
+          }
+        }
       ]
     );
+  };
+
+  const handleLogin = () => {
+    if (navigation) {
+      navigation.navigate('Login');
+    }
+  };
+
+  const handleRegister = () => {
+    if (navigation) {
+      navigation.navigate('Register');
+    }
   };
 
   const handleDeleteAccount = () => {
@@ -200,6 +242,229 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const handleHelpFeedback = () => {
     console.log('Help & Feedback');
   };
+
+  // Dynamic styles based on theme
+  const dynamicStyles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: {
+      flex: 1,
+    },
+    loadingText: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: colors.text,
+      marginTop: 16,
+    },
+    loginPromptCard: {
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      padding: 24,
+      marginBottom: 20,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4,
+    },
+    loginPromptIcon: {
+      marginBottom: 20,
+    },
+    loginPromptTitle: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 8,
+      textAlign: 'center',
+    },
+    loginPromptSubtitle: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      lineHeight: 24,
+      marginBottom: 24,
+    },
+  });
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <SafeAreaView style={dynamicStyles.safeArea}>
+        <StatusBar style={isDarkMode ? "light" : "dark"} />
+        <View style={[dynamicStyles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={dynamicStyles.loadingText}>
+            Loading...
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Not authenticated state
+  const renderNotLoggedIn = () => (
+    <SafeAreaView style={dynamicStyles.safeArea}>
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
+      
+      <View style={dynamicStyles.container}>
+        {/* Header */}
+        <View style={{ paddingHorizontal: 16, paddingBottom: 16, paddingTop: insets.top + 10 }}>
+          <Text style={{ fontSize: 24, fontWeight: '600', color: colors.text }}>Profile</Text>
+        </View>
+
+        <ScrollView 
+          style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
+        >
+          {/* Login Prompt Card */}
+          <View style={dynamicStyles.loginPromptCard}>
+            <View style={dynamicStyles.loginPromptIcon}>
+              <Ionicons name="person-circle-outline" size={80} color={colors.primary} />
+            </View>
+            
+            <Text style={dynamicStyles.loginPromptTitle}>Welcome to Locado!</Text>
+            <Text style={dynamicStyles.loginPromptSubtitle}>
+              Sign in to access your profile, manage posts, and connect with your community
+            </Text>
+
+            <View style={{ width: '100%', gap: 12, marginBottom: 24 }}>
+              <TouchableOpacity 
+                style={{
+                  backgroundColor: colors.primary,
+                  paddingVertical: 16,
+                  borderRadius: 12,
+                  alignItems: 'center',
+                }}
+                onPress={handleLogin}
+              >
+                <Text style={{ color: 'white', fontSize: 18, fontWeight: '700' }}>Sign In</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={{
+                  backgroundColor: 'transparent',
+                  paddingVertical: 16,
+                  borderRadius: 12,
+                  alignItems: 'center',
+                  borderWidth: 2,
+                  borderColor: colors.primary,
+                }}
+                onPress={handleRegister}
+              >
+                <Text style={{ color: colors.primary, fontSize: 18, fontWeight: '600' }}>Create Account</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ width: '100%', alignItems: 'flex-start' }}>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text, marginBottom: 12 }}>
+                What you can do:
+              </Text>
+              {[
+                'Create and manage your posts',
+                'Connect with local experts', 
+                'Chat with community members',
+                'Build your trust score'
+              ].map((feature, index) => (
+                <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, width: '100%' }}>
+                  <Ionicons name="checkmark-circle" size={20} color={colors.success} />
+                  <Text style={{ fontSize: 14, color: colors.textSecondary, marginLeft: 8, flex: 1 }}>
+                    {feature}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          {/* Guest Settings */}
+          <View style={{
+            backgroundColor: colors.card,
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 12,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 3,
+            elevation: 2,
+          }}>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text, marginBottom: 16 }}>Settings</Text>
+            
+            {/* Dark Mode Toggle */}
+            <TouchableOpacity 
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingVertical: 12,
+              }}
+              onPress={handleDarkModeToggle}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Ionicons 
+                  name={isDarkMode ? "moon" : "moon-outline"} 
+                  size={20} 
+                  color={colors.textSecondary} 
+                />
+                <Text style={{ fontSize: 16, color: colors.text, marginLeft: 8 }}>Dark Mode</Text>
+              </View>
+              <TouchableOpacity
+                style={{
+                  width: 44,
+                  height: 24,
+                  borderRadius: 12,
+                  backgroundColor: isDarkMode ? colors.primary : colors.border,
+                  justifyContent: 'center',
+                  paddingHorizontal: 2,
+                }}
+                onPress={handleDarkModeToggle}
+              >
+                <View style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 10,
+                  backgroundColor: 'white',
+                  alignSelf: isDarkMode ? 'flex-end' : 'flex-start',
+                }} />
+              </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
+
+          {/* Help & Feedback */}
+          <TouchableOpacity 
+            style={{
+              backgroundColor: colors.card,
+              borderRadius: 12,
+              padding: 20,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.05,
+              shadowRadius: 3,
+              elevation: 2,
+            }}
+            onPress={handleHelpFeedback}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons name="help-circle-outline" size={20} color={colors.primary} />
+              <Text style={{ fontSize: 16, color: colors.text, marginLeft: 12 }}>Help & Feedback</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
+          </TouchableOpacity>
+        </ScrollView>
+
+        <BottomNavigation 
+          activeTab="Profile" 
+          onTabPress={handleNavigationPress} 
+        />
+      </View>
+    </SafeAreaView>
+  );
 
   // Dynamic styles based on theme
   const styles = StyleSheet.create({
@@ -630,6 +895,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     },
   });
 
+  // Return not logged in view if user is not authenticated
+  if (!isAuthenticated) {
+    return renderNotLoggedIn();
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style={isDarkMode ? "light" : "dark"} />
@@ -746,12 +1016,22 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             </TouchableOpacity>
 
             {/* Logout */}
-            <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
+            <TouchableOpacity 
+              style={styles.settingItem} 
+              onPress={handleLogout}
+              disabled={isLoggingOut}
+            >
               <View style={styles.settingLeft}>
                 <Ionicons name="log-out-outline" size={20} color={colors.textSecondary} />
-                <Text style={styles.settingText}>Logout</Text>
+                <Text style={[styles.settingText, isLoggingOut && { opacity: 0.5 }]}>
+                  Sign Out
+                </Text>
               </View>
-              <Ionicons name="chevron-forward" size={16} color={colors.textTertiary} />
+              {isLoggingOut ? (
+                <ActivityIndicator size="small" color={colors.primary} />
+              ) : (
+                <Ionicons name="chevron-forward" size={16} color={colors.textTertiary} />
+              )}
             </TouchableOpacity>
 
             {/* Delete Account */}
@@ -1422,6 +1702,109 @@ const styles = StyleSheet.create({
   imageUploadSubtext: {
     fontSize: 12,
     color: '#6B7280',
+  },
+  // New styles for not logged in state
+  loadingText: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  loginPromptCard: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  loginPromptIcon: {
+    marginBottom: 20,
+  },
+  loginPromptTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  loginPromptSubtitle: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 24,
+  },
+  loginPromptButtons: {
+    width: '100%',
+    gap: 12,
+    marginBottom: 24,
+  },
+  loginButton: {
+    backgroundColor: '#3B82F6',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  loginButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  registerButton: {
+    backgroundColor: 'transparent',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#3B82F6',
+  },
+  registerButtonText: {
+    color: '#3B82F6',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  featuresSection: {
+    width: '100%',
+    alignItems: 'flex-start',
+  },
+  featuresTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 12,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    width: '100%',
+  },
+  featureText: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginLeft: 8,
+    flex: 1,
+  },
+  guestSettingsCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
 });
 

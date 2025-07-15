@@ -7,4 +7,6 @@ export { default as SearchScreen } from './SearchScreen';
 export { default as ExpertsScreen } from './ExpertsScreen';
 export { default as PostsScreen } from './PostsScreen';
 export { default as ProfileScreen } from './ProfileScreen';
-export { default as CreatePostScreen } from './CreatePostScreen'; 
+export { default as CreatePostScreen } from './CreatePostScreen';
+export { default as LoginScreen } from './LoginScreen';
+export { default as RegisterScreen } from './RegisterScreen'; 
